@@ -1,0 +1,4 @@
+// src/app/transactions/page.tsx
+export default function TransactionsPage() {
+  return <h2 className="text-2xl font-semibold">Transactions</h2>;
+}

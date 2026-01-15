@@ -1,53 +1,52 @@
-'use client'
-import Link from 'next/link'
-import React from 'react'
-import TableRowsRoundedIcon from '@mui/icons-material/TableRowsRounded';
-import SearchIcon from '@mui/icons-material/Search';
-import PersonIcon from '@mui/icons-material/Person';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useSidebar } from '@/components/ui/sidebar';
+"use client";
+
+import Link from "next/link";
+import React from "react";
+import { User, Settings, Bell } from "lucide-react";
+import { ThemeToggle } from "../common/ThemeToggle";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
-    const { toggleSidebar } = useSidebar();
 
-    return (
-        <div className='flex justify-between items-center p-4  '>
-            <div className='flex items-center justify-between gap-3 '>
-                <button
-                    onClick={toggleSidebar}
-                    className='cursor-pointer hover:opacity-80 transition-opacity'
-                    aria-label="Toggle Sidebar"
-                >
-                    <TableRowsRoundedIcon sx={{ color: '#86848C' }} />
-                </button>
-                <div>
-                    <ol className='flex items-center gap-2'>
-                        <li>
-                            <Link href="/">OneBoard</Link>
-                        </li>
-                    </ol>
-                </div>
+  const iconButtons = [
+    { icon: Bell, label: "Notifications", hasBadge: true },
+    { icon: Settings, label: "Settings" },
+    { icon: User, label: "Profile" },
+  ];
 
-            </div>
-            <div className='flex items-center justify-between '>
-                <div className='border-[0.0625rem] border-[#373737] rounded-full p-2 flex items-center gap-2 bg-[#1A1A1A]'>
-                    <div><SearchIcon sx={{ color: '#637188' }} /></div>
-                    <div>
-                        <input type="text" placeholder='Type here...' className='bg-transparent outline-none border-none text-[#637188] text-16px font-normal' />
-                    </div>
-                </div>
-                <div>
-                    <ol className='flex items-center gap-2'>
-                        <li><PersonIcon sx={{ color: '##FFFFFF' }} /></li>
-                        <li><SettingsIcon sx={{ color: '##FFFFFF' }} /></li>
-                        <li><NotificationsIcon sx={{ color: '##FFFFFF' }} /></li>
+  return (
+    <div className="flex justify-between items-center px-4 h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex items-center gap-3">
+        <Link href="/" className="font-semibold text-lg hover:opacity-80 transition-opacity">
+          OneBoard
+        </Link>
+      </div>
 
-                    </ol>
-                </div>
-            </div>
+      <div className="flex items-center gap-2">
+        {iconButtons.map(({ icon: Icon, label, hasBadge }) => (
+          <button
+            key={label}
+            className={cn(
+              "relative p-2 rounded-lg transition-all duration-200",
+              "hover:bg-muted active:scale-95",
+              "text-muted-foreground hover:text-foreground",
+              "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            )}
+            aria-label={label}
+          >
+            <Icon className="h-5 w-5" />
+            {hasBadge && (
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full ring-2 ring-background" />
+            )}
+          </button>
+        ))}
+
+        <div className="ml-2 pl-2 border-l border-border">
+          <ThemeToggle />
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default Navbar
+export default Navbar;

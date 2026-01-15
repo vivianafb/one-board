@@ -1,12 +1,11 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Metadata } from "next";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 import SideBar from "@/components/Home/SideBar";
 import Navbar from "@/components/Home/Navbar";
-import MainContent from "@/components/Home/MainContent";
-import { Metadata } from "next";
-import {
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import Footer from "@/components/Home/Footer";
+
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -25,18 +24,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${plusJakartaSans.variable} font-sans antialiased bg-[#0f1535] text-white`}
-      >
+      <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
         <SidebarProvider>
-          <SideBar />
-          <MainContent>
-            <Navbar />
-            <section className="flex-1 p-4 md:p-6">{children}</section>
-          </MainContent>
+          <div className="flex min-h-screen w-full">
+            <SideBar />
+            <main className="flex-1 flex flex-col min-w-0 bg-background text-foreground">
+              <Navbar />
+              <section className="ob-page flex-1">
+                {children}
+              </section>
+              <Footer />
+            </main>
+          </div>
         </SidebarProvider>
       </body>
     </html>
   );
 }
-
