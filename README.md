@@ -1,102 +1,76 @@
-# OneBoard – Personal Finance Tracker (MVP Phase 1)
+# OneBoard – Personal Finance Dashboard
 
-OneBoard is a personal finance dashboard designed to help users track monthly spending, savings, and investments in a simple, visual, and structured way.  
-The goal of the project is to evolve from a front-end MVP using local data, into a full-stack application with persistent storage, user authentication, and real financial data integrations.
+OneBoard is a personal finance dashboard built to simulate a real-world application while focusing on **frontend architecture, state management, and TypeScript modeling**.
 
----
-
-## 🚀 Project Overview
-
-Many finance apps are either too complex or too rigid.  
-OneBoard aims to offer:
-- A clean monthly overview,
-- Flexible tracking of income and expenses,
-- Savings visibility over time,
-- Manual investment tracking (with future automation),
-- And visual insights that support better financial decisions.
-
-This repository currently contains the **Phase 1 MVP**, focused on the front-end implementation.
+The goal of this project is not to create a full finance product, but to demonstrate how a medium-sized dashboard app can be structured in a scalable and maintainable way.
 
 ---
 
-## 🧱 Tech Stack (Phase 1)
+## 🧠 What this project demonstrates
 
-- **Framework**: React / Next.js (TypeScript)
-- **UI**: Tailwind CSS 
-- **State Management**: Local state/Zustand
-- **Storage**: Dummy data + localStorage
-- **Charts**: Recharts (or equivalent)
-- **Testing**: Jest + React Testing Library
-- **Deployment**: Vercel
+This repository showcases:
 
-Backend and database will be introduced in Phase 2.
+- Structuring a Next.js application for scalability  
+- Modeling domain data using TypeScript  
+- Managing complex UI state with a centralized store  
+- Separating business logic from UI components  
+- Building dashboard-style interfaces with derived metrics  
 
 ---
 
-## ✨ MVP Features Included (Phase 1)
+## 🧱 Tech Stack
 
-### 🏠 Dashboard
-- Monthly summary cards:
-  - Remaining money available to spend
-  - Total savings (historical)
-  - Total invested and estimated gains
-- Month & year selector
-- Visual breakdown chart (expenses vs savings vs investments)
-- Daily CLP exchange values (USD / UF) displayed
-
-### 💸 Income & Expenses
-- Table of transactions with:
-  - Type (income or expense)
-  - Category (preset + custom)
-  - Payment method (cash, credit card local, international)
-  - Amount CLP / optional USD
-- Totals computed per month:
-  - Total income
-  - Total expenses
-  - Breakdown by payment method
-  - Conversion of USD expenses to CLP
-- Ability to add new categories
-
-### 💰 Savings
-- Monthly savings table:
-  - Money saved per month
-  - Money withdrawn (optional)
-  - Running cumulative balance
-- Shared savings logic reused across pages
-- “Total saved” metric appears in dashboard and savings page
-
-### 📈 Investments (Manual Tracking)
-- Separate sections for:
-  - Racional
-  - ETFs
-  - Term deposits
-  - MACH investments
-- Tables include:
-  - Invested amount
-  - Current value (manual input)
-  - Monthly gain/loss calculation
-
-### 📦 Project Quality
-- Typed financial models (TS interfaces)
-- Shared data helpers
-- Base unit tests for calculation logic
-- Deployable environment
+- Next.js (App Router) + TypeScript  
+- Tailwind CSS  
+- Zustand for global state  
+- React Hook Form  
+- Recharts  
+- Local mock data (simulating API responses)
 
 ---
 
-## 🛣 Roadmap
+## 🏗 Project Structure
 
-### Phase 1 – MVP (current)
-- Front-end only
-- LocalStorage + dummy data
-- Core pages: Dashboard, Income/Expenses, Savings, Investments
-- Charts + summary metrics
-- Base testing + deployment
-- Clear data models and architecture
+/types → Domain models (Transaction, Savings, Investment)  
+/services → Data helpers & business logic  
+/store → Global state management  
+/hooks → Reusable logic  
+/components/ui → Generic UI components  
+/features → Feature-based modules (dashboard, transactions, savings)
 
-### Phase 2 – Backend & Persistence
-- Node.js REST API (Express or Nest)
-- Persistent storage (PostgreSQL or MongoDB)
-- Swagger/OpenAPI API documentation
-- User authentication (JWT)
-- Move business logic to the serv
+---
+
+## ✨ MVP Features
+
+### Dashboard
+- Monthly financial summary  
+- Income vs expenses overview  
+- Savings and balance metrics  
+- Chart visualization  
+
+### Transactions
+- Typed transaction table  
+- Add/edit transaction form  
+- Monthly filtering  
+
+### Savings
+- Monthly savings tracking  
+- Cumulative balance calculation  
+
+### Investments
+- Basic manual investment tracking  
+
+---
+
+## 🚀 Purpose of the project
+
+This project focuses on **code organization and architecture**, not feature quantity.  
+It is designed to reflect how frontend code is structured in real production applications.
+
+---
+
+## 📌 Future improvements (optional)
+
+- Backend integration  
+- Authentication  
+- Persistent storage  

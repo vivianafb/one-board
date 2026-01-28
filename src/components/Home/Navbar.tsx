@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { User, Settings, Bell } from "lucide-react";
-import { ThemeToggle } from "../common/ThemeToggle";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {

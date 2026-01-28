@@ -2,33 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useUIStore } from "@/stores/ui.store";
 import { Home, ArrowLeftRight, PiggyBank, TrendingUp, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SIDEBAR_WIDTH = "18rem";
 const SIDEBAR_WIDTH_COLLAPSED = "4rem";
 
-const SideBar = () => {
+const SideBar = () => {   
   const pathname = usePathname();
-  const { isOpen, toggleSidebar, isMounted } = useSidebar();
+  const isOpen = useUIStore((s) => s.isSidebarOpen);
+  const isHydrated = useUIStore((s) => s.isHydrated);
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+    
+  const sidebarOpen = isHydrated ? isOpen : true;
   
-  // Evitar renderizado hasta que esté montado (evita hydration mismatch)
-  if (!isMounted) {
-    return (
-      <aside
-        className="bg-sidebar/80 backdrop-blur-xl border-r border-sidebar-border/50 flex flex-col flex-shrink-0 shadow-lg"
-        style={{ width: SIDEBAR_WIDTH }}
-      >
-        <div className="border-b border-sidebar-border h-16 flex items-center px-6">
-          <div className="text-xl font-bold tracking-tight text-sidebar-foreground">
-            OneBoard
-          </div>
-        </div>
-      </aside>
-    );
-  }
-
   const menuItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
@@ -40,19 +28,17 @@ const SideBar = () => {
     <aside
       className="bg-sidebar/80 backdrop-blur-xl border-r border-sidebar-border/50 flex flex-col flex-shrink-0 shadow-lg overflow-hidden"
       style={{
-        width: isOpen ? SIDEBAR_WIDTH : SIDEBAR_WIDTH_COLLAPSED,
-        transition: "width 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+        width: sidebarOpen ? SIDEBAR_WIDTH : SIDEBAR_WIDTH_COLLAPSED,
+        transition: isHydrated ? "width 300ms cubic-bezier(0.4, 0, 0.2, 1)" : "none",
       }}
     >
-      {/* Header con botón toggle */}
       <div className={cn(
         "border-b border-sidebar-border flex items-center relative h-16",
         "transition-all duration-300 ease-in-out",
-        isOpen ? "px-6" : "px-2"
+        sidebarOpen ? "px-6" : "px-2"
       )}>
-        {/* Separador vertical a la derecha del header */}
         <div className="absolute right-0 top-0 bottom-0 w-px bg-sidebar-border" />
-        {isOpen ? (
+        {sidebarOpen ? (
           <div className="flex items-center justify-between w-full gap-4">
             <div className={cn(
               "text-xl font-bold tracking-tight text-sidebar-foreground",
@@ -81,7 +67,7 @@ const SideBar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 transition-all duration-300 ease-in-out" style={{ paddingLeft: isOpen ? "1rem" : "0.5rem", paddingRight: isOpen ? "1rem" : "0.5rem" }}>
+      <nav className="flex-1 overflow-y-auto py-4 transition-all duration-300 ease-in-out" style={{ paddingLeft:  sidebarOpen ? "1rem" : "0.5rem", paddingRight: sidebarOpen ? "1rem" : "0.5rem" }}>
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
@@ -97,9 +83,9 @@ const SideBar = () => {
                     isActive
                       ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                       : "text-sidebar-foreground",
-                    isOpen ? "gap-3 px-4 py-3" : "justify-center px-2 py-3"
+                      sidebarOpen ? "gap-3 px-4 py-3" : "justify-center px-2 py-3"
                   )}
-                  title={!isOpen ? item.label : undefined}
+                  title={!sidebarOpen ? item.label : undefined}
                 >
                   <Icon
                     className={cn(
@@ -109,7 +95,7 @@ const SideBar = () => {
                         : "text-sidebar-foreground"
                     )}
                   />
-                  {isOpen && (
+                  {sidebarOpen && (
                     <span className="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
                       {item.label}
                     </span>

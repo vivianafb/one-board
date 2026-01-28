@@ -1,7 +1,6 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Metadata } from "next";
-import { SidebarProvider } from "@/contexts/SidebarContext";
 import SideBar from "@/components/Home/SideBar";
 import Navbar from "@/components/Home/Navbar";
 import Footer from "@/components/Home/Footer";
@@ -25,18 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
-        <SidebarProvider>
-          <div className="flex min-h-screen w-full">
-            <SideBar />
-            <main className="flex-1 flex flex-col min-w-0 bg-background text-foreground">
-              <Navbar />
-              <section className="ob-page flex-1">
-                {children}
-              </section>
-              <Footer />
-            </main>
-          </div>
-        </SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <SideBar />
+          <main className="flex-1 flex flex-col min-w-0 bg-background text-foreground">
+            <Navbar />
+            <section className="ob-page flex-1">{children}</section>
+            <Footer />
+          </main>
+        </div>
       </body>
     </html>
   );
