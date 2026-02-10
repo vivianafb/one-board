@@ -4,7 +4,7 @@ import { InvestmentsView } from "@/features/investment/components/InvestmentsVie
 export default function InvestmentsPage() {
   return (
     <>
-      <h2 className="ob-page-title">Investments</h2>
+      <h2 className="ob-page-title">Inversiones</h2>
       <InvestmentsView />
     </>
   );

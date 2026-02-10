@@ -22,9 +22,9 @@ const SideBar = () => {
   
   const menuItems = [
     { href: "/", label: "Home", icon: Home },
-    { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
-    { href: "/savings", label: "Savings", icon: PiggyBank },
-    { href: "/investments", label: "Investments", icon: TrendingUp },
+    { href: "/transactions", label: "Transacciones", icon: ArrowLeftRight },
+    { href: "/savings", label: "Ahorros", icon: PiggyBank },
+    { href: "/investments", label: "Inversiones", icon: TrendingUp },
   ];
 
   // En móvil: al navegar, cerramos el drawer.

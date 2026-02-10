@@ -3,6 +3,6 @@ import { TransactionsTable } from '@/features/transactions/components/Transactio
 
 export default function TransactionsPage() {
   return <>
-    <h2 className="ob-page-title">Transactions</h2><TransactionsTable />
+    <h2 className="ob-page-title">Movimientos</h2><TransactionsTable />
   </>
 }
