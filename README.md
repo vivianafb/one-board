@@ -2,7 +2,10 @@
 
 OneBoard is a personal finance dashboard built to simulate a real-world application while focusing on **frontend architecture, state management, and TypeScript modeling**.
 
+It emphasizes predictable state, explicit domain modeling, and clear separation of concerns.
+
 The goal of this project is not to create a full finance product, but to demonstrate how a medium-sized dashboard app can be structured in a scalable and maintainable way.
+
 
 ---
 
@@ -27,16 +30,22 @@ This repository showcases:
 - Recharts  
 - Local mock data (simulating API responses)
 
+This project follows a feature-based architecture with centralized domain typing to ensure scalability and maintainability.
+
 ---
 
-## 🏗 Project Structure
+## Project Structure
 
-/types → Domain models (Transaction, Savings, Investment)  
-/services → Data helpers & business logic  
-/store → Global state management  
-/hooks → Reusable logic  
-/components/ui → Generic UI components  
-/features → Feature-based modules (dashboard, transactions, savings)
+src/
+├─ app/              → Next.js App Router pages
+├─ components/       → Shared, layout and reusable UI components
+│  └─ ui/            → Generic UI components
+├─ features/         → Feature-based modules (dashboard, transactions, etc.)
+├─ stores/           → Global state management (Zustand)
+├─ types/            → Domain models and TypeScript types
+├─ lib/              → Helpers, utilities and business logic
+├─ mocks/            → Local mock data (simulating API responses)
+
 
 ---
 
@@ -72,5 +81,5 @@ It is designed to reflect how frontend code is structured in real production app
 ## 📌 Future improvements (optional)
 
 - Backend integration  
-- Authentication  
-- Persistent storage  
+- Authentication and user accounts
+- Persistent storage and caching
