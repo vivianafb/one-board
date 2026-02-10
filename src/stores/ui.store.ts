@@ -13,7 +13,8 @@ type UIStore = {
 type UIStoreCreator = StateCreator<UIStore>;
 
 const uiStoreCreator: UIStoreCreator = (set) => ({
-  isSidebarOpen: true,
+  // Mobile-first: el sidebar (drawer) empieza cerrado.
+  isSidebarOpen: false,
   isHydrated: false,
   toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
   openSidebar: () => set({ isSidebarOpen: true }),

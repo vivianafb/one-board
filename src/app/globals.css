@@ -50,21 +50,26 @@ body {
 :root {
   --radius: 0.625rem;
   /* Palette 3: Deep Indigo - Light Mode */
-  --background: #fafafa;
+  /* Background con tinte índigo sutil */
+  --background: #f5f7fa;
   --foreground: #1e1b4b;
+  /* Cards blancas para contraste */
   --card: #ffffff;
   --card-foreground: #1e1b4b;
   --popover: #ffffff;
   --popover-foreground: #1e1b4b;
+  /* Primary índigo profundo */
   --primary: #4338ca;
   --primary-foreground: #ffffff;
   --secondary: #6366f1;
   --secondary-foreground: #ffffff;
+  /* Muted con color índigo visible */
   --muted: #e0e7ff;
-  --muted-foreground: #64748b;
+  --muted-foreground: #475569;
   --accent: #818cf8;
   --accent-foreground: #ffffff;
   --destructive: #dc2626;
+  /* Bordes con color índigo */
   --border: #a5b4fc;
   --input: #c7d2fe;
   --ring: #4338ca;
@@ -75,6 +80,7 @@ body {
   --chart-5: #d97706;
   --success: #059669;
   --warning: #d97706;
+  /* Sidebar con fondo índigo claro */
   --sidebar: #e0e7ff;
   --sidebar-foreground: #1e1b4b;
   --sidebar-primary: #4338ca;
@@ -131,12 +137,18 @@ body {
     @apply bg-background text-foreground;
   }
   
+  /* Evita scroll horizontal en XS por pequeños overflows (navbar/icons). */
+  html,
+  body {
+    @apply overflow-x-hidden;
+  }
+  
   /* Light mode: gradiente con tonos índigo */
   :root body {
     background-image: 
-      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(67, 56, 202, 0.1) 0px, transparent 50%),
-      radial-gradient(at 50% 50%, rgba(165, 180, 252, 0.08) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(67, 56, 202, 0.12) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(165, 180, 252, 0.1) 0px, transparent 50%);
     background-size: 200% 200%;
     background-attachment: fixed;
   }
@@ -169,11 +181,21 @@ body {
 
   /* Section titles */
   .ob-page-title {
-    @apply text-2xl font-semibold tracking-tight;
+    /* Mobile-first: evita que en 768px (md) se vea gigante; escala fuerte recién en lg */
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight;
   }
 
   .ob-page-subtitle {
-    @apply text-sm text-muted-foreground;
+    @apply text-xs sm:text-sm lg:text-base text-muted-foreground;
+  }
+
+  /* Body text helpers */
+  .ob-text {
+    @apply text-sm lg:text-base;
+  }
+
+  .ob-text-muted {
+    @apply text-sm lg:text-base text-muted-foreground;
   }
 
   /* Primary button */
