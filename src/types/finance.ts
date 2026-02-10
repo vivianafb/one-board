@@ -16,3 +16,10 @@ export interface Transaction {
     paymentMethod: PaymentMethod;
 }
 
+export interface Investment {
+    id: string;
+    name: string;
+    amountCLP: number;
+    createdAt: string;
+}
+

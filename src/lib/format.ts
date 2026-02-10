@@ -13,6 +13,19 @@ export function formatAmountCLP(amount: number): string {
   }).format(amount);
 }
 
+/**
+ * Formatea un número como monto en dólares (USD).
+ * Ejemplo: 1200.5 → "$1,200.50"
+ */
+export function formatAmountUSD(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
 const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   bank_transfer: 'Transferencia bancaria',
   debit_card: 'Tarjeta de débito',
