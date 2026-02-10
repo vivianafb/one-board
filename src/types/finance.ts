@@ -1,5 +1,8 @@
 export type TransactionType = "income" | "expense";
 
+/** Solo para gastos (expenses): fijo o variable */
+export type ExpenseCategory = "fixed" | "variable";
+
 export type PaymentMethod =
     | "credit_card"
     | "debit_card"
@@ -14,6 +17,8 @@ export interface Transaction {
     type: TransactionType;
     createdAt: string;
     paymentMethod: PaymentMethod;
+    /** Solo para type === "expense" */
+    expenseCategory?: ExpenseCategory;
 }
 
 export interface Investment {

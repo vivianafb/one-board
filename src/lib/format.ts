@@ -1,4 +1,4 @@
-import type { PaymentMethod } from '@/types/finance';
+import type { PaymentMethod, ExpenseCategory } from '@/types/finance';
 
 /**
  * Formatea un número como monto en pesos chilenos (CLP).
@@ -39,4 +39,16 @@ const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
  */
 export function formatPaymentMethod(method: PaymentMethod): string {
   return PAYMENT_METHOD_LABELS[method];
+}
+
+const EXPENSE_CATEGORY_LABELS: Record<Exclude<ExpenseCategory, undefined>, string> = {
+  fixed: 'Gasto fijo',
+  variable: 'Gasto variable',
+};
+
+/**
+ * Formatea la categoría de gasto para mostrarla al usuario.
+ */
+export function formatExpenseCategory(category?: ExpenseCategory): string {
+  return category ? EXPENSE_CATEGORY_LABELS[category] : '—';
 }
