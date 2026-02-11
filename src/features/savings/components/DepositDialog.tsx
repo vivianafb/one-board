@@ -5,20 +5,27 @@ import { useSavingsStore } from "../store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { PlusCircle } from "lucide-react"
+import { formatAmountCLP } from "@/lib/format"
 
 export function DepositDialog({ goalId, goalName }: { goalId: string; goalName: string }) {
   const [amount, setAmount] = useState("")
   const [open, setOpen] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const addDeposit = useSavingsStore((state) => state.actions.addDeposit)
 
-  const handleDeposit = () => {
+  const handleDepositClick = () => {
+    const numAmount = Number(amount)
+    if (numAmount <= 0) return
+    setShowConfirm(true)
+  }
+
+  const handleConfirmDeposit = () => {
     const numAmount = Number(amount)
     if (numAmount <= 0) return
 
-    // Obtenemos el mes actual en formato YYYY-MM
     const currentMonth = new Date().toISOString().substring(0, 7)
-    
     addDeposit(goalId, numAmount, currentMonth)
     setAmount("")
     setOpen(false)
@@ -43,10 +50,19 @@ export function DepositDialog({ goalId, goalName }: { goalId: string; goalName: 
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-          <Button onClick={handleDeposit} className="w-full ob-btn-primary">
+          <Button onClick={handleDepositClick} className="w-full ob-btn-primary">
             Confirmar Aporte
           </Button>
         </div>
+        <ConfirmDialog
+          open={showConfirm}
+          onOpenChange={setShowConfirm}
+          title="¿Estás seguro?"
+          description={`¿Deseas continuar y aportar ${formatAmountCLP(Number(amount))} a "${goalName}"?`}
+          confirmLabel="Continuar"
+          cancelLabel="Cancelar"
+          onConfirm={handleConfirmDeposit}
+        />
       </DialogContent>
     </Dialog>
   )

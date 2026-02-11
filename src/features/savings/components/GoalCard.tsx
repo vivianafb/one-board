@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress"; // Componente de Shadcn
-import { formatAmountCLP } from "@/lib/format";
+import { formatAmountCLP, formatSavingGoalCategory } from "@/lib/format";
 import { SavingGoal } from "@/types/finance";
 import { DepositDialog } from "./DepositDialog";
 export const GoalCard = ({ goal }: { goal: SavingGoal }) => {
@@ -12,7 +12,7 @@ export const GoalCard = ({ goal }: { goal: SavingGoal }) => {
         <div className="flex justify-between items-center">
           <CardTitle className="text-md font-semibold">{goal.name}</CardTitle>
           <span className="text-xs font-bold px-2 py-1 bg-primary/10 rounded text-primary">
-            {goal.category}
+            {formatSavingGoalCategory(goal.category)}
           </span>
         </div>
         <DepositDialog goalId={goal.id} goalName={goal.name} />

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -8,6 +9,7 @@ import { Form as ShadcnForm, FormControl, FormField, FormItem, FormLabel, FormMe
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
 const formSchema = z.object({
   name: z.string().min(2, "El nombre es muy corto"),
@@ -20,6 +22,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 const AddGoalForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [pendingValues, setPendingValues] = useState<FormValues | null>(null)
   const addGoal = useSavingsStore((state) => state.actions.addGoal)
 
   const form = useForm<FormValues>({
@@ -32,14 +36,21 @@ const AddGoalForm = ({ onSuccess }: { onSuccess: () => void }) => {
   })
 
   const onSubmit = (values: FormValues) => {
+    setPendingValues(values)
+    setShowConfirm(true)
+  }
+
+  const handleConfirm = () => {
+    if (!pendingValues) return
     addGoal({
       id: crypto.randomUUID(),
-      ...values,
+      ...pendingValues,
       currentAmount: 0,
       currency: "CLP",
       createdAt: new Date().toISOString(),
     })
-    onSuccess() // Para cerrar el modal automáticamente
+    setPendingValues(null)
+    onSuccess()
   }
 
   return (
@@ -89,6 +100,15 @@ const AddGoalForm = ({ onSuccess }: { onSuccess: () => void }) => {
           )}
         />
         <Button type="submit" className="w-full">Guardar Meta</Button>
+        <ConfirmDialog
+          open={showConfirm}
+          onOpenChange={setShowConfirm}
+          title="¿Estás seguro?"
+          description="¿Deseas continuar y guardar esta meta de ahorro?"
+          confirmLabel="Continuar"
+          cancelLabel="Cancelar"
+          onConfirm={handleConfirm}
+        />
       </form>
     </ShadcnForm>
   )
