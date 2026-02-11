@@ -1,4 +1,4 @@
-import type { Investment } from "@/features/transactions/types";
+import type { Investment } from "../types";
 
 const TOTAL_LABEL = "Total hasta la fecha";
 

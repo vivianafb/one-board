@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useInvestmentsStore } from "../store";
+import { useInvestmentStore } from "../store";
 
 export type PeriodOption = {
   periodId: string;
@@ -12,7 +12,7 @@ export type PeriodOption = {
  * periods[0] de cualquier item = periodo actual (isCurrent).
  */
 export function useAvailablePeriods(): PeriodOption[] {
-  const items = useInvestmentsStore((s) => s.items);
+  const items = useInvestmentStore((s) => s.items);
 
   return useMemo(() => {
     const byId = new Map<string, string>();
