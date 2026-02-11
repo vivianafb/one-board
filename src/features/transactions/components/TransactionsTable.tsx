@@ -6,7 +6,9 @@ import { formatAmountCLP, formatPaymentMethod, formatExpenseCategory } from "@/l
 import type { Transaction } from "@/types/finance";
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
 import { useTransactionsStore } from "../store";
+import { useShallow } from "zustand/react/shallow";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../constants";
+import { selectTransactionStats } from "../selectors";
 
 function AmountCell({ transaction }: { transaction: Transaction }) {
     const isIncome = transaction.type === "income";
@@ -23,32 +25,15 @@ function AmountCell({ transaction }: { transaction: Transaction }) {
 
 export const TransactionsTable = () => {
     const items = useTransactionsStore((s) => s.items);
-    const add = useTransactionsStore((s) => s.add);
-    const update = useTransactionsStore((s) => s.update);
-    const deleteTransaction = useTransactionsStore((s) => s.delete);
-    const { balance, fixedExpenses, variableExpenses } = useMemo(() => {
-        const totalIncomes = items
-            .filter((t) => t.type === "income")
-            .reduce((sum, t) => sum + t.amountCLP, 0);
-        const expenses = items.filter((t) => t.type === "expense");
-        const totalExpenses = expenses.reduce((sum, t) => sum + t.amountCLP, 0);
-        const fixed = expenses
-            .filter((t) => t.expenseCategory === "fixed")
-            .reduce((sum, t) => sum + t.amountCLP, 0);
-        const variable = expenses
-            .filter((t) => t.expenseCategory === "variable")
-            .reduce((sum, t) => sum + t.amountCLP, 0);
-        return {
-            balance: totalIncomes - totalExpenses,
-            fixedExpenses: fixed,
-            variableExpenses: variable,
-        };
-    }, [items]);
+    const { add, update, delete: deleteTransaction } = useTransactionsStore((s) => s.actions);    
+    const { balance, fixedExpenses, variableExpenses } = useTransactionsStore(
+        useShallow(selectTransactionStats)
+    );
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
-    const { paginatedTransactions, totalPages, startIndex, endIndex, total, effectivePage } = useMemo(() => {
+    const paginationData = useMemo(() => {
         const total = items.length;
         const totalPages = Math.max(1, Math.ceil(total / pageSize));
         const effectivePage = Math.min(Math.max(1, currentPage), totalPages);
@@ -66,7 +51,7 @@ export const TransactionsTable = () => {
     }, [items, currentPage, pageSize]);
 
     const goToPage = (page: number) => {
-        setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+        setCurrentPage(Math.max(1, Math.min(page, paginationData.totalPages)));
     };
 
     const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -77,7 +62,7 @@ export const TransactionsTable = () => {
 
     const handleDelete = (id: string) => {
         deleteTransaction(id);
-        if (paginatedTransactions.length <= 1 && currentPage > 1) {
+        if (paginationData.paginatedTransactions.length <= 1 && currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
     };
@@ -352,7 +337,7 @@ export const TransactionsTable = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {paginatedTransactions.map((transaction) => (
+                    {paginationData.paginatedTransactions.map((transaction) => (
                         <TableRow key={transaction.id}>
                             <TableCell>{transaction.description}</TableCell>
                             <TableCell>{transaction.createdAt}</TableCell>
@@ -389,11 +374,11 @@ export const TransactionsTable = () => {
             </Table>
             <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3 text-sm">
                 <p className="text-muted-foreground">
-                    Mostrando <span className="font-medium text-foreground">{startIndex}</span>
+                    Mostrando <span className="font-medium text-foreground">{paginationData.startIndex}</span>
                     {" – "}
-                    <span className="font-medium text-foreground">{endIndex}</span>
+                    <span className="font-medium text-foreground">{paginationData.endIndex}</span>
                     {" de "}
-                    <span className="font-medium text-foreground">{total}</span>
+                    <span className="font-medium text-foreground">{paginationData.total}</span>
                     {" movimientos"}
                 </p>
                 <div className="flex items-center gap-4">
@@ -417,20 +402,20 @@ export const TransactionsTable = () => {
                     <div className="flex items-center gap-1">
                         <button
                             type="button"
-                            onClick={() => goToPage(effectivePage - 1)}
-                            disabled={effectivePage <= 1}
+                            onClick={() => goToPage(paginationData.effectivePage - 1)}
+                            disabled={paginationData.effectivePage <= 1}
                             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                             aria-label="Página anterior"
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </button>
                         <span className="min-w-[6rem] px-2 text-center text-muted-foreground">
-                            Página {effectivePage} de {totalPages}
+                            Página {paginationData.effectivePage} de {paginationData.totalPages}
                         </span>
                         <button
                             type="button"
-                            onClick={() => goToPage(effectivePage + 1)}
-                            disabled={effectivePage >= totalPages}
+                            onClick={() => goToPage(paginationData.effectivePage + 1)}
+                            disabled={paginationData.effectivePage >= paginationData.totalPages}
                             className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                             aria-label="Página siguiente"
                         >

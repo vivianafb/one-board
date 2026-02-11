@@ -1,9 +1,11 @@
 "use client";
 
 import { formatAmountCLP, formatAmountUSD } from "@/lib/format";
-import type { Investment } from "@/features/transactions/types";
-import { useInvestmentsStore } from "../store";
-import { getPeriodValues } from "../utils/period";
+import type { Investment } from "../types";
+import { useInvestmentStore } from "../store";
+import { selectSelectedPeriodId } from "../selectors";
+import { calculateInvestmentPerformance } from "../utils/performance";
+import { getGainClass } from "../utils/ui";
 
 const TYPE_LABELS: Record<Investment["type"], string> = {
   ETF: "ETF",
@@ -22,29 +24,11 @@ function formatAmount(currency: "CLP" | "USD", value: number) {
  * Una inversión: nombre, tipo, plataforma. Ganancia del periodo (según filtro por mes) y total.
  */
 export default function InvestmentRow({ investment }: InvestmentRowProps) {
-  const selectedPeriodId = useInvestmentsStore((s) => s.selectedPeriodId);
-  const {
-    name,
-    type,
-    provider,
-    currency,
-    investedAmount,
-    currentValue,
-  } = investment;
+  const selectedPeriodId = useInvestmentStore(selectSelectedPeriodId);
+  const { name, type, provider, currency } = investment;
 
-  const gainLoss = currentValue - investedAmount;
-  const returnPercent =
-    investedAmount > 0 ? (gainLoss / investedAmount) * 100 : 0;
-  const periodData = getPeriodValues(investment, selectedPeriodId);
-  const periodGain = periodData
-    ? periodData.endValue - periodData.startValue
-    : null;
-  const periodPercent =
-    periodData && periodData.startValue > 0
-      ? (periodGain! / periodData.startValue) * 100
-      : null;
-  const isGain = gainLoss >= 0;
-  const gainClass = isGain ? "text-[var(--success)]" : "text-destructive";
+  const { gainLoss, returnPercent, period, isGain } =
+    calculateInvestmentPerformance(investment, selectedPeriodId);
 
   return (
     <li className="ob-card">
@@ -66,26 +50,22 @@ export default function InvestmentRow({ investment }: InvestmentRowProps) {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
-          {periodGain != null && (
-            <div
-              className={`font-medium ${periodGain >= 0 ? "text-[var(--success)]" : "text-destructive"}`}
-            >
+          {period != null && (
+            <div className={`font-medium ${getGainClass(period.gain)}`}>
               <span className="ob-text-muted text-xs block">
-                {periodData!.periodLabel}
+                {period.label}
               </span>
               <span>
-                {periodGain >= 0 ? "+" : ""}
-                {formatAmount(currency, periodGain)}
-                {periodPercent != null && (
-                  <span className="opacity-90 ml-1">
-                    ({(periodPercent >= 0 ? "+" : "")}
-                    {periodPercent.toFixed(1)}%)
-                  </span>
-                )}
+                {period.gain >= 0 ? "+" : ""}
+                {formatAmount(currency, period.gain)}
+                <span className="opacity-90 ml-1">
+                  ({(period.percent >= 0 ? "+" : "")}
+                  {period.percent.toFixed(1)}%)
+                </span>
               </span>
             </div>
           )}
-          <div className={`font-medium ${gainClass}`}>
+          <div className={`font-medium ${getGainClass(gainLoss)}`}>
             <span className="ob-text-muted text-xs block">Total</span>
             <span>
               {isGain ? "+" : ""}

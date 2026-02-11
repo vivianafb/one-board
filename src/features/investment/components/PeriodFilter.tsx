@@ -1,15 +1,23 @@
 "use client";
 
-import { useInvestmentsStore } from "../store";
-import { useAvailablePeriods } from "../hooks/useAvailablePeriods";
+import { useMemo } from "react";
+import { useInvestmentStore } from "../store";
+import {
+  selectItems,
+  selectSelectedPeriodId,
+  selectSetSelectedPeriodId,
+  getMonthsFromItems,
+} from "../selectors";
 
 /**
- * Filtro: Total hasta la fecha o un mes concreto (ganancia de ese periodo).
+ * Filtro unificado: Total hasta la fecha o un mes concreto.
+ * Controla tanto la lista filtrada como el cálculo de ganancias (selectedPeriodId en store).
  */
 export default function PeriodFilter() {
-  const periods = useAvailablePeriods();
-  const selectedPeriodId = useInvestmentsStore((s) => s.selectedPeriodId);
-  const setSelectedPeriodId = useInvestmentsStore((s) => s.setSelectedPeriodId);
+  const items = useInvestmentStore(selectItems);
+  const selectedPeriodId = useInvestmentStore(selectSelectedPeriodId);
+  const setSelectedPeriodId = useInvestmentStore(selectSetSelectedPeriodId);
+  const months = useMemo(() => getMonthsFromItems(items), [items]);
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -26,10 +34,9 @@ export default function PeriodFilter() {
         aria-label="Ver total o por mes"
       >
         <option value="">Total hasta la fecha</option>
-        {periods.map((p) => (
-          <option key={p.periodId} value={p.periodId}>
-            {p.periodLabel}
-            {p.isCurrent ? " (mes actual)" : ""}
+        {months.map((m) => (
+          <option key={m.value} value={m.value}>
+            {m.label}
           </option>
         ))}
       </select>

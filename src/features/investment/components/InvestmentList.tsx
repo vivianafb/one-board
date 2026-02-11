@@ -1,8 +1,12 @@
 "use client";
 
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { formatAmountCLP } from "@/lib/format";
+import { formatAmountCLP, formatAmountUSD } from "@/lib/format";
 import type { Investment } from "@/types/finance";
+
+function formatAmount(currency: "CLP" | "USD", value: number) {
+  return currency === "CLP" ? formatAmountCLP(value) : formatAmountUSD(value);
+}
 
 type InvestmentListProps = {
   investments: Investment[];
@@ -23,7 +27,7 @@ export function InvestmentList({ investments }: InvestmentListProps) {
         <TableRow>
           <TableHead>Nombre</TableHead>
           <TableHead>Fecha</TableHead>
-          <TableHead className="text-right">Monto</TableHead>
+          <TableHead className="text-right tabular-nums">Monto</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -31,7 +35,7 @@ export function InvestmentList({ investments }: InvestmentListProps) {
           <TableRow key={inv.id}>
             <TableCell className="font-medium">{inv.name}</TableCell>
             <TableCell>{formatDate(inv.createdAt)}</TableCell>
-            <TableCell className="text-right">{formatAmountCLP(inv.amountCLP)}</TableCell>
+            <TableCell className="text-right tabular-nums">{formatAmount(inv.currency, inv.currentValue)}</TableCell>
           </TableRow>
         ))}
       </TableBody>

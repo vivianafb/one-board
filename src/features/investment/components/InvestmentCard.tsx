@@ -1,9 +1,11 @@
 "use client";
 
 import { formatAmountCLP, formatAmountUSD } from "@/lib/format";
-import type { Investment } from "@/features/transactions/types";
-import { useInvestmentsStore } from "../store";
-import { getPeriodValues } from "../utils/period";
+import type { Investment } from "../types";
+import { useInvestmentStore } from "../store";
+import { selectSelectedPeriodId } from "../selectors";
+import { calculateInvestmentPerformance } from "../utils/performance";
+import { getGainClass } from "../utils/ui";
 
 const TYPE_LABELS: Record<Investment["type"], string> = {
   ETF: "ETF",
@@ -22,29 +24,13 @@ function formatAmount(currency: "CLP" | "USD", value: number) {
  * Card por inversión: ganancia del periodo (según filtro por mes) y total.
  */
 export default function InvestmentCard({ investment }: InvestmentCardProps) {
-  const selectedPeriodId = useInvestmentsStore((s) => s.selectedPeriodId);
-  const {
-    name,
-    type,
-    provider,
-    currency,
-    investedAmount,
-    currentValue,
-  } = investment;
+  const selectedPeriodId = useInvestmentStore(selectSelectedPeriodId);
+  const { name, type, provider, currency } = investment;
 
-  const gainLoss = currentValue - investedAmount;
-  const returnPercent =
-    investedAmount > 0 ? (gainLoss / investedAmount) * 100 : 0;
-  const periodData = getPeriodValues(investment, selectedPeriodId);
-  const periodGain = periodData
-    ? periodData.endValue - periodData.startValue
-    : null;
-  const periodPercent =
-    periodData && periodData.startValue > 0
-      ? (periodGain! / periodData.startValue) * 100
-      : null;
-  const isGain = gainLoss >= 0;
-  const gainClass = isGain ? "text-[var(--success)]" : "text-destructive";
+  const performance = calculateInvestmentPerformance(investment, selectedPeriodId);
+  const { gainLoss, returnPercent, period, isGain } = performance;
+
+  
 
   return (
     <article className="ob-card h-full flex flex-col" aria-label={name}>
@@ -61,30 +47,22 @@ export default function InvestmentCard({ investment }: InvestmentCardProps) {
         {TYPE_LABELS[type]} · {provider}
       </p>
       <div className="mt-auto space-y-2 pt-3 border-t border-border">
-        {periodGain != null && (
+        {period != null && (
           <div className="flex justify-between text-sm">
-            <dt className="ob-text-muted">{periodData!.periodLabel}</dt>
-            <dd
-              className={
-                periodGain >= 0
-                  ? "text-[var(--success)] font-medium"
-                  : "text-destructive font-medium"
-              }
-            >
-              {periodGain >= 0 ? "+" : ""}
-              {formatAmount(currency, periodGain)}
-              {periodPercent != null && (
-                <span className="opacity-90 ml-1">
-                  ({(periodPercent >= 0 ? "+" : "")}
-                  {periodPercent.toFixed(1)}%)
-                </span>
-              )}
+            <dt className="ob-text-muted">{period.label}</dt>
+            <dd className={`font-medium ${getGainClass(period.gain)}`}>
+              {period.gain >= 0 ? "+" : ""}
+              {formatAmount(currency, period.gain)}
+              <span className="opacity-90 ml-1">
+                ({(period.percent >= 0 ? "+" : "")}
+                {period.percent.toFixed(1)}%)
+              </span>
             </dd>
           </div>
         )}
         <div className="flex justify-between text-sm">
           <dt className="ob-text-muted">Total</dt>
-          <dd className={`font-medium ${gainClass}`}>
+          <dd className={`font-medium ${getGainClass(gainLoss)}`}>
             {isGain ? "+" : ""}
             {formatAmount(currency, gainLoss)}
             <span className="opacity-90 ml-1">
