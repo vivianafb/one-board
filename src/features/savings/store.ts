@@ -9,7 +9,7 @@ type SavingsActions = {
   addMonthlySaving: (saving: MonthlySaving) => void;
 };
 
-type SavingsStore = SavingsState & {
+export type SavingsStore = SavingsState & {
   actions: SavingsActions;
 };
 
