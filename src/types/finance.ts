@@ -1,3 +1,5 @@
+import type { ExpenseType, PaymentMethod, ExpenseCategory } from "@/lib/transaction-options";
+
 // --- Utilidades Globales ---
 export type Currency = "CLP" | "USD";
 export type YearMonth = `${number}-${number}`; // Tipado fuerte para fechas YYYY-MM
@@ -26,9 +28,7 @@ export interface Investment {
 
 // --- Transacciones ---
 export type TransactionType = "income" | "expense";
-export type ExpenseCategory = "fixed" | "variable";
-export type PaymentMethod = "credit_card" | "debit_card" | "bank_transfer" | "cash";
-
+export type { ExpenseType, PaymentMethod, ExpenseCategory } from "@/lib/transaction-options";
 export interface Transaction {
   id: string;
   amountCLP: number;
@@ -36,9 +36,11 @@ export interface Transaction {
   type: TransactionType;
   createdAt: string;
   paymentMethod: PaymentMethod;
-  expenseCategory?: ExpenseCategory; // Podríamos usar la Unión Discriminada que vimos antes
+  expenseType?: ExpenseType; 
+  expenseCategory?: ExpenseCategory;
 }
-export type SavingGoalCategory = 'EMERGENCY_FUND' | 'TRAVEL' | 'HOME' | 'RETIREMENT' | 'OTHER';
+
+export type SavingGoalCategory = 'EMERGENCY_FUND' | 'TRAVEL' | 'HOME' | 'RETIREMENT' | 'OTHER' ;
 
 export interface SavingGoal {
   id: string;

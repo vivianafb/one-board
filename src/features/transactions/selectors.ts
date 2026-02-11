@@ -7,10 +7,10 @@ export const selectTransactionStats = (state: TransactionsStore) => {
     const expensesList = state.items.filter((t) => t.type === "expense");
     const totalExpenses = expensesList.reduce((sum, t) => sum + t.amountCLP, 0);
     const fixed = expensesList
-        .filter((t) => t.expenseCategory === "fixed")
+        .filter((t) => t.expenseType === "fixed")
         .reduce((sum, t) => sum + t.amountCLP, 0);
     const variable = expensesList
-        .filter((t) => t.expenseCategory === "variable")
+        .filter((t) => t.expenseType === "variable")
         .reduce((sum, t) => sum + t.amountCLP, 0);
     return {
         balance: incomes - totalExpenses,

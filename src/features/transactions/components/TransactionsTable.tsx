@@ -3,7 +3,12 @@
 import { useState, useMemo } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { formatAmountCLP, formatPaymentMethod, formatExpenseCategory } from "@/lib/format";
-import type { Transaction } from "@/types/finance";
+import {
+    EXPENSE_CATEGORY_SELECT_OPTIONS,
+    EXPENSE_TYPE_SELECT_OPTIONS,
+    PAYMENT_METHOD_SELECT_OPTIONS,
+} from "@/lib/transaction-options";
+import type { ExpenseCategory, ExpenseType, Transaction } from "@/types/finance";
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
 import { useTransactionsStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
@@ -25,7 +30,7 @@ function AmountCell({ transaction }: { transaction: Transaction }) {
 
 export const TransactionsTable = () => {
     const items = useTransactionsStore((s) => s.items);
-    const { add, update, delete: deleteTransaction } = useTransactionsStore((s) => s.actions);    
+    const { add, update, delete: deleteTransaction } = useTransactionsStore((s) => s.actions);
     const { balance, fixedExpenses, variableExpenses } = useTransactionsStore(
         useShallow(selectTransactionStats)
     );
@@ -72,7 +77,8 @@ export const TransactionsTable = () => {
         description: "",
         amountCLP: 0,
         type: "expense",
-        expenseCategory: "variable",
+        expenseType: "variable",
+        expenseCategory: "OTHERS", // Nuevo campo de rubro
         paymentMethod: "cash",
         createdAt: new Date().toISOString().slice(0, 10),
     });
@@ -88,13 +94,16 @@ export const TransactionsTable = () => {
             type,
             paymentMethod: newTransaction.paymentMethod ?? "cash",
             createdAt: newTransaction.createdAt ?? new Date().toISOString().slice(0, 10),
-            ...(type === "expense" && { expenseCategory: newTransaction.expenseCategory ?? "variable" }),
+            ...(type === "expense" && {
+                expenseType: newTransaction.expenseType ?? "variable",
+                expenseCategory: newTransaction.expenseCategory ?? "OTHERS",
+            }),
         });
         setNewTransaction({
             description: "",
             amountCLP: 0,
             type: "expense",
-            expenseCategory: "variable",
+            expenseType: "variable",
             paymentMethod: "cash",
             createdAt: new Date().toISOString().slice(0, 10),
         });
@@ -111,7 +120,8 @@ export const TransactionsTable = () => {
             description: transaction.description,
             amountCLP: transaction.amountCLP,
             type: transaction.type,
-            expenseCategory: transaction.expenseCategory,
+            expenseType: transaction.expenseType ?? "variable",
+            expenseCategory: transaction.expenseCategory ?? "OTHERS",
             paymentMethod: transaction.paymentMethod,
             createdAt: transaction.createdAt,
         });
@@ -127,7 +137,8 @@ export const TransactionsTable = () => {
             type,
             paymentMethod: editTransaction.paymentMethod ?? "cash",
             createdAt: editTransaction.createdAt ?? new Date().toISOString().slice(0, 10),
-            expenseCategory: type === "expense" ? (editTransaction.expenseCategory ?? "variable") : undefined,
+            expenseType: type === "expense" ? (editTransaction.expenseType ?? "variable") : undefined,
+            expenseCategory: type === "expense" ? (editTransaction.expenseCategory ?? "OTHERS") : undefined,
         });
         setEditingId(null);
         setEditTransaction({});
@@ -203,16 +214,34 @@ export const TransactionsTable = () => {
                             </select>
                         </div>
                         {editTransaction.type === "expense" && (
-                            <div>
-                                <label className="mb-1 block text-sm font-medium">Categoría</label>
-                                <select
-                                    value={editTransaction.expenseCategory ?? "variable"}
-                                    onChange={(e) => setEditTransaction((t) => ({ ...t, expenseCategory: e.target.value as Transaction["expenseCategory"] }))}
-                                    className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-                                >
-                                    <option value="fixed">Gasto fijo</option>
-                                    <option value="variable">Gasto variable</option>
-                                </select>
+                            <div className="flex gap-3">
+                                {/* Selector de Naturaleza */}
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium">Naturaleza</label>
+                                    <select
+                                        value={editTransaction.expenseType ?? "variable"}
+                                        onChange={(e) => setEditTransaction((t) => ({ ...t, expenseType: e.target.value as ExpenseType }))}
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                                    >
+                                        {EXPENSE_TYPE_SELECT_OPTIONS.map(({ value, label }) => (
+                                            <option key={value} value={value}>{label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Selector de Categoría */}
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium">Categoría</label>
+                                    <select
+                                        value={editTransaction.expenseCategory ?? "OTHERS"}
+                                        onChange={(e) => setEditTransaction((t) => ({ ...t, expenseCategory: e.target.value as ExpenseCategory }))}
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                                    >
+                                        {EXPENSE_CATEGORY_SELECT_OPTIONS.map(({ value, label }) => (
+                                            <option key={value} value={value}>{label}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         )}
                         <div>
@@ -222,10 +251,9 @@ export const TransactionsTable = () => {
                                 onChange={(e) => setEditTransaction((t) => ({ ...t, paymentMethod: e.target.value as Transaction["paymentMethod"] }))}
                                 className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                             >
-                                <option value="cash">Efectivo</option>
-                                <option value="debit_card">Débito</option>
-                                <option value="credit_card">Crédito</option>
-                                <option value="bank_transfer">Transferencia</option>
+                                {PAYMENT_METHOD_SELECT_OPTIONS.map(({ value, label }) => (
+                                    <option key={value} value={value}>{label}</option>
+                                ))}
                             </select>
                         </div>
                         <div>
@@ -284,17 +312,35 @@ export const TransactionsTable = () => {
                             </select>
                         </div>
                         {newTransaction.type === "expense" && (
-                            <div>
-                                <label className="mb-1 block text-sm font-medium">Categoría</label>
-                                <select
-                                    value={newTransaction.expenseCategory ?? "variable"}
-                                    onChange={(e) => setNewTransaction((t) => ({ ...t, expenseCategory: e.target.value as Transaction["expenseCategory"] }))}
-                                    className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-                                >
-                                    <option value="fixed">Gasto fijo</option>
-                                    <option value="variable">Gasto variable</option>
-                                </select>
-                            </div>
+                            <>
+                                {/* Selector de Naturaleza (Fijo/Variable) */}
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium">Naturaleza</label>
+                                    <select
+                                        value={newTransaction.expenseType ?? "variable"}
+                                        onChange={(e) => setNewTransaction((t) => ({ ...t, expenseType: e.target.value as ExpenseType }))}
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                                    >
+                                        {EXPENSE_TYPE_SELECT_OPTIONS.map(({ value, label }) => (
+                                            <option key={value} value={value}>{label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Selector de Categoría */}
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium">Categoría</label>
+                                    <select
+                                        value={newTransaction.expenseCategory ?? "OTHERS"}
+                                        onChange={(e) => setNewTransaction((t) => ({ ...t, expenseCategory: e.target.value as ExpenseCategory }))}
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                                    >
+                                        {EXPENSE_CATEGORY_SELECT_OPTIONS.map(({ value, label }) => (
+                                            <option key={value} value={value}>{label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </>
                         )}
                         <div>
                             <label className="mb-1 block text-sm font-medium">Método</label>
@@ -303,10 +349,9 @@ export const TransactionsTable = () => {
                                 onChange={(e) => setNewTransaction((t) => ({ ...t, paymentMethod: e.target.value as Transaction["paymentMethod"] }))}
                                 className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                             >
-                                <option value="cash">Efectivo</option>
-                                <option value="debit_card">Débito</option>
-                                <option value="credit_card">Crédito</option>
-                                <option value="bank_transfer">Transferencia</option>
+                                {PAYMENT_METHOD_SELECT_OPTIONS.map(({ value, label }) => (
+                                    <option key={value} value={value}>{label}</option>
+                                ))}
                             </select>
                         </div>
                         <div>
@@ -343,9 +388,18 @@ export const TransactionsTable = () => {
                             <TableCell>{transaction.createdAt}</TableCell>
                             <AmountCell transaction={transaction} />
                             <TableCell className="text-muted-foreground">
-                                {transaction.type === "expense"
-                                    ? formatExpenseCategory(transaction.expenseCategory)
-                                    : "—"}
+                                {transaction.type === "expense" ? (
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-foreground font-medium">
+                                            {formatExpenseCategory(transaction.expenseCategory)}
+                                        </span>
+                                        <span className="text-[10px] uppercase tracking-wider opacity-80">
+                                            {transaction.expenseType === "fixed" ? "Fijo" : "Variable"}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    "—"
+                                )}
                             </TableCell>
                             <TableCell>{formatPaymentMethod(transaction.paymentMethod)}</TableCell>
                             <TableCell>
