@@ -1,4 +1,4 @@
-import type { PaymentMethod, ExpenseCategory } from '@/types/finance';
+import type { PaymentMethod, ExpenseCategory, SavingGoalCategory } from '@/types/finance';
 
 /**
  * Formatea un número como monto en pesos chilenos (CLP).
@@ -51,4 +51,20 @@ const EXPENSE_CATEGORY_LABELS: Record<Exclude<ExpenseCategory, undefined>, strin
  */
 export function formatExpenseCategory(category?: ExpenseCategory): string {
   return category ? EXPENSE_CATEGORY_LABELS[category] : '—';
+}
+
+const SAVING_GOAL_CATEGORY_LABELS: Record<SavingGoalCategory, string> = {
+  EMERGENCY_FUND: 'Fondo de emergencia',
+  TRAVEL: 'Viajes',
+  HOME: 'Hogar',
+  RETIREMENT: 'Jubilación',
+  OTHER: 'Otro',
+};
+
+/**
+ * Formatea la categoría de meta de ahorro para mostrarla al usuario.
+ * Ejemplo: "EMERGENCY_FUND" → "Fondo de emergencia"
+ */
+export function formatSavingGoalCategory(category: SavingGoalCategory): string {
+  return SAVING_GOAL_CATEGORY_LABELS[category];
 }

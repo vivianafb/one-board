@@ -8,6 +8,7 @@ type SavingsActions = {
   updateGoal: (id: string, patch: Partial<SavingGoal>) => void;
   deleteGoal: (id: string) => void;
   addMonthlySaving: (saving: MonthlySaving) => void;
+  addDeposit: (goalId: string, amount: number, monthId: string) => void;
 };
 
 export type SavingsStore = SavingsState & {
@@ -31,8 +32,28 @@ const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
       
     addMonthlySaving: (saving) =>
       set((state) => ({ monthlyHistory: [...state.monthlyHistory, saving] })),
+    addDeposit: (goalId: string, amount: number, monthId: string) =>
+    set((state) => ({
+      // 1. Actualizamos el monto actual de la meta
+      goals: state.goals.map((g) =>
+        g.id === goalId ? { ...g, currentAmount: g.currentAmount + amount } : g
+      ),
+      // 2. Registramos el movimiento en el historial
+      monthlyHistory: [
+        ...state.monthlyHistory,
+        {
+          id: crypto.randomUUID(),
+          goalId,
+          amount,
+          monthId, // Ej: "2026-01"
+          currency: state.goals.find(g => g.id === goalId)?.currency || "CLP",
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    })),
   },
 });
+
 
 export const useSavingsStore = create<SavingsStore>()(
   persist(savingsStoreCreator, {
