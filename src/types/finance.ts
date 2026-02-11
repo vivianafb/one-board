@@ -38,11 +38,31 @@ export interface Transaction {
   paymentMethod: PaymentMethod;
   expenseCategory?: ExpenseCategory; // Podríamos usar la Unión Discriminada que vimos antes
 }
+export type SavingGoalCategory = 'EMERGENCY_FUND' | 'TRAVEL' | 'HOME' | 'RETIREMENT' | 'OTHER';
 
-export interface SavingRecord {
-    id: string;
-    month: YearMonth;
-    targetAmount: number;
-    currentAmount: number;
-    isCompleted: boolean;
-  }
+export interface SavingGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  currency: 'CLP' | 'USD';
+  category: SavingGoalCategory;
+  deadline?: string; // ISO Date
+  createdAt: string;
+}
+
+export interface MonthlySaving {
+  id: string;
+  monthId: string; // Formato "YYYY-MM" para vincular con filtros
+  amount: number;
+  currency: 'CLP' | 'USD';
+  createdAt: string;
+  // Opcional: Vincularlo a una meta específica
+  goalId?: string; 
+}
+
+export interface SavingsState {
+  goals: SavingGoal[];
+  monthlyHistory: MonthlySaving[];
+  // El "Total Ahorrado" suele ser un selector derivado, no un estado
+}
