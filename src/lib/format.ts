@@ -1,4 +1,9 @@
-import type { PaymentMethod, ExpenseCategory, SavingGoalCategory } from '@/types/finance';
+import type { SavingGoalCategory } from '@/types/finance';
+import {
+  PAYMENT_METHOD_OPTIONS,
+  EXPENSE_CATEGORY_OPTIONS,
+  EXPENSE_TYPE_OPTIONS,
+} from './transaction-options';
 
 /**
  * Formatea un número como monto en pesos chilenos (CLP).
@@ -26,31 +31,26 @@ export function formatAmountUSD(amount: number): string {
   }).format(amount);
 }
 
-const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
-  bank_transfer: 'Transferencia bancaria',
-  debit_card: 'Tarjeta de débito',
-  credit_card: 'Tarjeta de crédito',
-  cash: 'Efectivo',
-};
-
 /**
  * Formatea el método de pago para mostrarlo al usuario.
  * Ejemplo: "bank_transfer" → "Transferencia bancaria"
  */
-export function formatPaymentMethod(method: PaymentMethod): string {
-  return PAYMENT_METHOD_LABELS[method];
+export function formatPaymentMethod(method: keyof typeof PAYMENT_METHOD_OPTIONS): string {
+  return PAYMENT_METHOD_OPTIONS[method];
 }
 
-const EXPENSE_CATEGORY_LABELS: Record<Exclude<ExpenseCategory, undefined>, string> = {
-  fixed: 'Gasto fijo',
-  variable: 'Gasto variable',
-};
+/**
+ * Formatea el tipo de gasto (fijo/variable) para mostrarlo al usuario.
+ */
+export function formatExpenseType(type?: keyof typeof EXPENSE_TYPE_OPTIONS): string {
+  return type ? EXPENSE_TYPE_OPTIONS[type] : '—';
+}
 
 /**
- * Formatea la categoría de gasto para mostrarla al usuario.
+ * Formatea la categoría de gasto (rubro) para mostrarla al usuario.
  */
-export function formatExpenseCategory(category?: ExpenseCategory): string {
-  return category ? EXPENSE_CATEGORY_LABELS[category] : '—';
+export function formatExpenseCategory(category?: keyof typeof EXPENSE_CATEGORY_OPTIONS): string {
+  return category ? EXPENSE_CATEGORY_OPTIONS[category] : '—';
 }
 
 const SAVING_GOAL_CATEGORY_LABELS: Record<SavingGoalCategory, string> = {
