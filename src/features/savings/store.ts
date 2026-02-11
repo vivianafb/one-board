@@ -1,6 +1,7 @@
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 import { SavingGoal, MonthlySaving, SavingsState } from "@/types/finance";
+import savings from "@/mocks/savings";
 
 type SavingsActions = {
   addGoal: (goal: SavingGoal) => void;
@@ -14,7 +15,7 @@ export type SavingsStore = SavingsState & {
 };
 
 const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
-  goals: [],
+  goals: savings,
   monthlyHistory: [],
   actions: {
     addGoal: (goal) =>

@@ -1,4 +1,4 @@
-import { SavingsStore } from "./store";
+
 
 // Suma el currentAmount de todas las metas activas
 export const selectTotalSaved = (state: any) => {

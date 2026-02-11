@@ -14,7 +14,7 @@ const CardSavings = ({ totalSaved }: { totalSaved: number }) => {
                 <div className="text-2xl font-bold text-primary">
                     {formatAmountCLP(totalSaved)}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-2">
                     Acumulado en todas tus metas
                 </p>
             </CardContent>
