@@ -2,8 +2,7 @@
 
 import { formatAmountCLP, formatAmountUSD } from "@/lib/format";
 import type { Investment } from "../types";
-import { useInvestmentStore } from "../store";
-import { selectSelectedPeriodId } from "../selectors";
+import { useConfigStore } from "@/features/config/store";
 import { calculateInvestmentPerformance } from "../utils/performance";
 import { getGainClass } from "../utils/ui";
 
@@ -24,11 +23,11 @@ function formatAmount(currency: "CLP" | "USD", value: number) {
  * Una inversión: nombre, tipo, plataforma. Ganancia del periodo (según filtro por mes) y total.
  */
 export default function InvestmentRow({ investment }: InvestmentRowProps) {
-  const selectedPeriodId = useInvestmentStore(selectSelectedPeriodId);
+  const selectedMonth = useConfigStore((s) => s.selectedMonth);
   const { name, type, provider, currency } = investment;
 
   const { gainLoss, returnPercent, period, isGain } =
-    calculateInvestmentPerformance(investment, selectedPeriodId);
+    calculateInvestmentPerformance(investment, selectedMonth);
 
   return (
     <li className="ob-card">

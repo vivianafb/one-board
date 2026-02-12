@@ -2,13 +2,13 @@
 
 import { useSavingsStore } from "@/features/savings/store";
 import { selectTotalSaved } from "@/features/savings/selectors";
-import CardSavings from "@/features/savings/components/CardSavings";
+import SavingsCard from "@/features/savings/components/SavingsCard";
 import AddGoalDialog from "@/features/savings/components/AddGoalDialog";
-import { GoalCard } from "@/features/savings/components/GoalCard"; // El nuevo
+import { GoalCard } from "@/features/savings/components/GoalCard";
 
 export default function SavingsPage() {
   const totalSaved = useSavingsStore(selectTotalSaved);
-  const goals = useSavingsStore((state) => state.goals); // Traemos la lista de metas
+  const goals = useSavingsStore((state) => state.goals); 
 
   return (
     <div className="p-6 space-y-6">
@@ -18,13 +18,11 @@ export default function SavingsPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        {/* Card de Resumen Total */}
-        <CardSavings totalSaved={totalSaved} />
+        <SavingsCard totalSaved={totalSaved} />
       </div>
 
       <h2 className="text-xl font-semibold mt-8">Mis Metas</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* Desglose: Mapeamos cada meta a su propia Card */}
         {goals.map((goal) => (
           <GoalCard key={goal.id} goal={goal} />
         ))}
