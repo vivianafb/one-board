@@ -14,6 +14,7 @@ import { useTransactionsStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../constants";
 import { selectTransactionStats } from "../selectors";
+import { useConfigStore } from "@/features/config/store";
 
 function AmountCell({ transaction }: { transaction: Transaction }) {
     const isIncome = transaction.type === "income";
@@ -30,21 +31,24 @@ function AmountCell({ transaction }: { transaction: Transaction }) {
 
 export const TransactionsTable = () => {
     const items = useTransactionsStore((s) => s.items);
+    const selectedMonth = useConfigStore((s) => s.selectedMonth);
     const { add, update, delete: deleteTransaction } = useTransactionsStore((s) => s.actions);
     const { balance, fixedExpenses, variableExpenses } = useTransactionsStore(
         useShallow(selectTransactionStats)
     );
-
+    const filteredItems = useMemo(() => {
+        return items.filter(t => t.createdAt.startsWith(selectedMonth));
+    }, [items, selectedMonth]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
     const paginationData = useMemo(() => {
-        const total = items.length;
+        const total = filteredItems.length;
         const totalPages = Math.max(1, Math.ceil(total / pageSize));
         const effectivePage = Math.min(Math.max(1, currentPage), totalPages);
         const startIndex = (effectivePage - 1) * pageSize;
         const endIndex = Math.min(startIndex + pageSize, total);
-        const paginatedTransactions = items.slice(startIndex, endIndex);
+        const paginatedTransactions = filteredItems.slice(startIndex, endIndex);
         return {
             paginatedTransactions,
             totalPages,
@@ -53,7 +57,7 @@ export const TransactionsTable = () => {
             total,
             effectivePage,
         };
-    }, [items, currentPage, pageSize]);
+    }, [filteredItems, currentPage, pageSize]);
 
     const goToPage = (page: number) => {
         setCurrentPage(Math.max(1, Math.min(page, paginationData.totalPages)));
@@ -155,13 +159,13 @@ export const TransactionsTable = () => {
                 </div>
                 <div className="rounded-lg border bg-muted/40 px-4 py-3">
                     <p className="text-sm font-medium text-muted-foreground">Gastos fijos</p>
-                    <p className="text-xl font-semibold tabular-nums text-red-600">
+                    <p className="text-xl font-semibold tabular-nums">
                         {formatAmountCLP(fixedExpenses)}
                     </p>
                 </div>
                 <div className="rounded-lg border bg-muted/40 px-4 py-3">
                     <p className="text-sm font-medium text-muted-foreground">Gastos variables</p>
-                    <p className="text-xl font-semibold tabular-nums text-red-600">
+                    <p className="text-xl font-semibold tabular-nums">
                         {formatAmountCLP(variableExpenses)}
                     </p>
                 </div>

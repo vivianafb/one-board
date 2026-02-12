@@ -6,7 +6,7 @@ const transactions: Transaction[] = [
     amountCLP: 950000,
     description: "Sueldo enero",
     type: "income",
-    createdAt: "2026-01-30",
+    createdAt: "2026-02-01",
     paymentMethod: "bank_transfer",
   },
   {

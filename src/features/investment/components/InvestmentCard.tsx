@@ -2,8 +2,7 @@
 
 import { formatAmountCLP, formatAmountUSD } from "@/lib/format";
 import type { Investment } from "../types";
-import { useInvestmentStore } from "../store";
-import { selectSelectedPeriodId } from "../selectors";
+import { useConfigStore } from "@/features/config/store";
 import { calculateInvestmentPerformance } from "../utils/performance";
 import { getGainClass } from "../utils/ui";
 
@@ -24,10 +23,10 @@ function formatAmount(currency: "CLP" | "USD", value: number) {
  * Card por inversión: ganancia del periodo (según filtro por mes) y total.
  */
 export default function InvestmentCard({ investment }: InvestmentCardProps) {
-  const selectedPeriodId = useInvestmentStore(selectSelectedPeriodId);
+  const selectedMonth = useConfigStore((s) => s.selectedMonth);
   const { name, type, provider, currency } = investment;
 
-  const performance = calculateInvestmentPerformance(investment, selectedPeriodId);
+  const performance = calculateInvestmentPerformance(investment, selectedMonth);
   const { gainLoss, returnPercent, period, isGain } = performance;
 
   
