@@ -7,13 +7,15 @@ import { cn } from "@/lib/utils";
 type Theme = "light" | "dark";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+
+
     const saved = window.localStorage.getItem("oneboard-theme") as Theme | null;
-    const initial: Theme = saved === "dark" || saved === "light" ? saved : "light";
+    const initial: Theme = saved === "dark" || saved === "light" ? saved : "dark";
 
     setTheme(initial);
     document.documentElement.classList.toggle("dark", initial === "dark");

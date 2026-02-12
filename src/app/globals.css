@@ -93,6 +93,10 @@ body {
   --sidebar-accent-foreground: #4338ca;
   --sidebar-border: #a5b4fc;
   --sidebar-ring: #4338ca;
+  /* Glass cards en light mode: fondo sólido coherente con el tema */
+  --ob-glass-bg: rgba(255, 255, 255, 0.92);
+  --ob-glass-border: rgba(165, 180, 252, 0.4);
+  --ob-card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
 }
 
 .dark {
@@ -135,6 +139,7 @@ body {
   /* Efecto glass para tarjetas */
   --ob-glass-bg: #1e293b66;
   --ob-glass-border: #ffffff1a;
+  --ob-card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
@@ -176,38 +181,29 @@ body {
 
   /* Main card */
   .ob-card {
-    @apply bg-card text-card-foreground rounded-lg p-4 md:p-6 shadow-sm;
+    @apply bg-card text-card-foreground rounded-lg p-4 md:p-6;
+    box-shadow: var(--ob-card-shadow);
   }
 
-  /* Glassmorphism - Tarjetas con efecto glass (Slate 800 40% opacidad) */
+  /* Glassmorphism - Tarjetas con efecto glass */
   .ob-card-glass {
     @apply rounded-xl text-card-foreground backdrop-blur-md;
     background-color: var(--ob-glass-bg, #1e293b66);
     border: 1px solid var(--ob-glass-border, #ffffff1a);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: var(--ob-card-shadow);
   }
 
-  /* Montos: semántica emerald (ingresos) / rose (gastos) con glow */
+  /* Montos: semántica emerald (ingresos) / rose (gastos) */
   .ob-amount-income {
     @apply font-bold tabular-nums tracking-tighter;
     color: var(--income);
-    text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
   }
   .ob-amount-expense {
     @apply font-bold tabular-nums tracking-tighter;
     color: var(--expense);
-    text-shadow: 0 0 20px rgba(251, 113, 133, 0.35);
   }
   .ob-amount-neutral {
     @apply font-bold tabular-nums tracking-tighter text-foreground;
-  }
-
-  /* Glow radial bajo valores (usar con relative + pseudo-elemento) */
-  .ob-glow-income {
-    box-shadow: inset 0 -20px 40px -10px rgba(16, 185, 129, 0.15);
-  }
-  .ob-glow-expense {
-    box-shadow: inset 0 -20px 40px -10px rgba(251, 113, 133, 0.12);
   }
 
   /* Icono en contenedor circular sutil */
@@ -218,6 +214,7 @@ body {
   /* Secondary card / softer section */
   .ob-card-muted {
     @apply bg-muted text-muted-foreground rounded-lg p-4 md:p-6 border border-border;
+    box-shadow: var(--ob-card-shadow);
   }
 
   /* Section titles - tonos slate sin glow índigo */
