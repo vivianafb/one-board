@@ -46,7 +46,6 @@ export const selectCategoryStats = (state: TransactionsStore, selectedMonth: str
       return acc;
     }, {} as Record<string, number>);
   
-    // Formato que pide Recharts
     return Object.entries(categories).map(([name, value]) => ({
       name,
       value

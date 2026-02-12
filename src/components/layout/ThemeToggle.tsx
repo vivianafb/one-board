@@ -12,7 +12,6 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-    // Read theme saved or use "light" by default
     const saved = window.localStorage.getItem("oneboard-theme") as Theme | null;
     const initial: Theme = saved === "dark" || saved === "light" ? saved : "light";
 
@@ -27,7 +26,6 @@ export function ThemeToggle() {
     window.localStorage.setItem("oneboard-theme", next);
   };
 
-  // Evitar hidration mismatc
   if (!mounted) {
     return (
       <div className="w-12 h-6 rounded-full bg-muted animate-pulse" />
@@ -46,7 +44,6 @@ export function ThemeToggle() {
       )}
       aria-label="Toggle theme"
     >
-      {/* Toggle circle */}
       <span
         className={cn(
           "absolute left-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow-md transition-all duration-300 ease-in-out",
@@ -60,7 +57,6 @@ export function ThemeToggle() {
         )}
       </span>
 
-      {/* Icons in background */}
       <div className="flex w-full items-center justify-between px-1.5">
         <Sun
           className={cn(
