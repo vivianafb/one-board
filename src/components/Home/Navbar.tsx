@@ -42,7 +42,6 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-1 sm:gap-2">
-        {/* En XS (<= 320px) dejamos solo notificaciones para evitar overflow */}
         {iconButtons.map(({ icon: Icon, label, hasBadge }, idx) => (
           <button
             key={label}

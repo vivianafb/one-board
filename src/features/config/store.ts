@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface ConfigState {
-  selectedMonth: string; // Formato "2026-02"
+  selectedMonth: string; 
   actions: {
     setMonth: (month: string) => void;
     nextMonth: () => void;
@@ -15,7 +15,7 @@ export const useConfigStore = create<ConfigState>((set) => ({
     setMonth: (month) => set({ selectedMonth: month }),
     nextMonth: () => set((state) => {
       const [year, month] = state.selectedMonth.split("-").map(Number);
-      const date = new Date(year, month, 1); // El constructor de Date maneja el cambio de año solo
+      const date = new Date(year, month, 1); 
       return { selectedMonth: date.toISOString().substring(0, 7) };
     }),
     prevMonth: () => set((state) => {
