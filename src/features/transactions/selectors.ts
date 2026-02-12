@@ -34,3 +34,21 @@ export const selectTransactionStats = (state: TransactionsStore, selectedMonth: 
         creditCardDebt
     };
 };
+
+export const selectCategoryStats = (state: TransactionsStore, selectedMonth: string) => {
+    const monthlyExpenses = state.items.filter(t => 
+      t.type === "expense" && t.createdAt.startsWith(selectedMonth)
+    );
+  
+    const categories = monthlyExpenses.reduce((acc, t) => {
+      const category = t.expenseCategory || "OTHERS";
+      acc[category] = (acc[category] || 0) + t.amountCLP;
+      return acc;
+    }, {} as Record<string, number>);
+  
+    // Formato que pide Recharts
+    return Object.entries(categories).map(([name, value]) => ({
+      name,
+      value
+    }));
+  };
