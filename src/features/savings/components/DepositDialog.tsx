@@ -39,7 +39,7 @@ export function DepositDialog({ goalId, goalName }: { goalId: string; goalName: 
           Aportar
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[300px]">
+      <DialogContent className="ob-card-glass sm:max-w-[300px]">
         <DialogHeader>
           <DialogTitle className="text-sm">Aportar a: {goalName}</DialogTitle>
         </DialogHeader>

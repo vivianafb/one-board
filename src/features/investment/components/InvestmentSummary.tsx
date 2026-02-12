@@ -12,11 +12,11 @@ export function InvestmentSummary({ investments }: InvestmentSummaryProps) {
   const { total, count } = useInvestmentSummary(investments);
 
   return (
-    <div className="rounded-lg border bg-card p-4 text-card-foreground">
-      <p className="text-sm text-muted-foreground">
+    <div className="ob-card-glass p-4">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
         {count} inversión{count !== 1 ? "es" : ""} · Total
       </p>
-      <p className="text-xl font-semibold">{formatAmountCLP(total)}</p>
+      <p className="text-xl font-bold tracking-tighter tabular-nums">{formatAmountCLP(total)}</p>
     </div>
   );
 }

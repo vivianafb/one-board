@@ -21,7 +21,7 @@ function AmountCell({ transaction }: { transaction: Transaction }) {
     const displayAmount = isIncome
         ? transaction.amountCLP
         : -transaction.amountCLP;
-    const colorClass = isIncome ? "text-green-600 font-medium" : "text-red-600 font-medium";
+    const colorClass = isIncome ? "ob-amount-income font-medium" : "ob-amount-expense font-medium";
     return (
         <TableCell className={colorClass}>
             {formatAmountCLP(displayAmount)}
@@ -151,19 +151,19 @@ export const TransactionsTable = () => {
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border bg-muted/40 px-4 py-3">
+                <div className="ob-card-glass px-4 py-3">
                     <p className="text-sm font-medium text-muted-foreground">Balance (ingresos − gastos)</p>
-                    <p className={`text-xl font-semibold tabular-nums ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    <p className={`text-xl ${balance >= 0 ? "ob-amount-income" : "ob-amount-expense"}`}>
                         {formatAmountCLP(balance)}
                     </p>
                 </div>
-                <div className="rounded-lg border bg-muted/40 px-4 py-3">
+                <div className="ob-card-glass px-4 py-3">
                     <p className="text-sm font-medium text-muted-foreground">Gastos fijos</p>
                     <p className="text-xl font-semibold tabular-nums">
                         {formatAmountCLP(fixedExpenses)}
                     </p>
                 </div>
-                <div className="rounded-lg border bg-muted/40 px-4 py-3">
+                <div className="ob-card-glass px-4 py-3">
                     <p className="text-sm font-medium text-muted-foreground">Gastos variables</p>
                     <p className="text-xl font-semibold tabular-nums">
                         {formatAmountCLP(variableExpenses)}
@@ -183,7 +183,7 @@ export const TransactionsTable = () => {
                     {showAddForm ? "Cancelar" : "Agregar transacción"}
                 </button>
                 {editingId && (
-                    <form onSubmit={handleEditSubmit} className="flex flex-wrap items-end gap-3 rounded-lg border border-primary/30 bg-muted/20 p-4">
+                    <form onSubmit={handleEditSubmit} className="ob-card-glass flex flex-wrap items-end gap-3 p-4">
                         <p className="w-full text-sm font-medium text-muted-foreground">Editar transacción</p>
                         <div>
                             <label className="mb-1 block text-sm font-medium">Descripción</label>
@@ -282,7 +282,7 @@ export const TransactionsTable = () => {
                     </form>
                 )}
                 {showAddForm && (
-                    <form onSubmit={handleAddSubmit} className="flex flex-wrap items-end gap-3 rounded-lg border bg-muted/20 p-4">
+                    <form onSubmit={handleAddSubmit} className="ob-card-glass flex flex-wrap items-end gap-3 p-4">
                         <div>
                             <label className="mb-1 block text-sm font-medium">Descripción</label>
                             <input
@@ -374,6 +374,7 @@ export const TransactionsTable = () => {
                 )}
             </div>
 
+            <div className="ob-card-glass overflow-hidden p-4 space-y-4">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -430,7 +431,7 @@ export const TransactionsTable = () => {
                     ))}
                 </TableBody>
             </Table>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3 text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-sm">
                 <p className="text-muted-foreground">
                     Mostrando <span className="font-medium text-foreground">{paginationData.startIndex}</span>
                     {" – "}
@@ -481,6 +482,7 @@ export const TransactionsTable = () => {
                         </button>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

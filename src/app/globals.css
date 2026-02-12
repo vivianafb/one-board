@@ -36,6 +36,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-income: var(--income);
+  --color-expense: var(--expense);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -80,6 +82,8 @@ body {
   --chart-5: #d97706;
   --success: #059669;
   --warning: #d97706;
+  --income: #059669;
+  --expense: #fb7185;
   /* Sidebar con fondo índigo claro */
   --sidebar: #e0e7ff;
   --sidebar-foreground: #1e1b4b;
@@ -92,24 +96,24 @@ body {
 }
 
 .dark {
-  /* Palette 3: Deep Indigo - Dark Mode */
-  --background: #1e1b4b;
-  --foreground: #e0e7ff;
-  --card: #312e81;
-  --card-foreground: #e0e7ff;
-  --popover: #312e81;
-  --popover-foreground: #e0e7ff;
+  /* Slate/Zinc base - tonos neutros oscuros */
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #818cf8;
-  --secondary-foreground: #1e1b4b;
-  --muted: #312e81;
-  --muted-foreground: #a5b4fc;
-  --accent: #a5b4fc;
-  --accent-foreground: #1e1b4b;
+  --secondary: #334155;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #475569;
+  --accent-foreground: #f8fafc;
   --destructive: #ef4444;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
+  --border: #ffffff1a;
+  --input: #ffffff26;
   --ring: #6366f1;
   --chart-1: #6366f1;
   --chart-2: #818cf8;
@@ -118,14 +122,19 @@ body {
   --chart-5: #f59e0b;
   --success: #10b981;
   --warning: #f59e0b;
-  --sidebar: #312e81;
-  --sidebar-foreground: #e0e7ff;
+  --income: #10b981;
+  --expense: #fb7185;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f8fafc;
   --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #4338ca;
-  --sidebar-accent-foreground: #e0e7ff;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #ffffff1a;
   --sidebar-ring: #6366f1;
+  /* Efecto glass para tarjetas */
+  --ob-glass-bg: #1e293b66;
+  --ob-glass-border: #ffffff1a;
 }
 
 @layer base {
@@ -153,13 +162,9 @@ body {
     background-attachment: fixed;
   }
   
-  /* Dark mode: gradiente con tonos índigo */
+  /* Dark mode: fondo Slate 950 (#020617) */
   .dark body {
-    background-image: 
-      radial-gradient(at 20% 30%, rgba(99, 102, 241, 0.2) 0px, transparent 50%),
-      radial-gradient(at 80% 70%, rgba(129, 140, 248, 0.15) 0px, transparent 50%);
-    background-size: 200% 200%;
-    background-attachment: fixed;
+    background-image: none;
   }
 }
 
@@ -174,15 +179,50 @@ body {
     @apply bg-card text-card-foreground rounded-lg p-4 md:p-6 shadow-sm;
   }
 
+  /* Glassmorphism - Tarjetas con efecto glass (Slate 800 40% opacidad) */
+  .ob-card-glass {
+    @apply rounded-xl text-card-foreground backdrop-blur-md;
+    background-color: var(--ob-glass-bg, #1e293b66);
+    border: 1px solid var(--ob-glass-border, #ffffff1a);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  /* Montos: semántica emerald (ingresos) / rose (gastos) con glow */
+  .ob-amount-income {
+    @apply font-bold tabular-nums tracking-tighter;
+    color: var(--income);
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+  .ob-amount-expense {
+    @apply font-bold tabular-nums tracking-tighter;
+    color: var(--expense);
+    text-shadow: 0 0 20px rgba(251, 113, 133, 0.35);
+  }
+  .ob-amount-neutral {
+    @apply font-bold tabular-nums tracking-tighter text-foreground;
+  }
+
+  /* Glow radial bajo valores (usar con relative + pseudo-elemento) */
+  .ob-glow-income {
+    box-shadow: inset 0 -20px 40px -10px rgba(16, 185, 129, 0.15);
+  }
+  .ob-glow-expense {
+    box-shadow: inset 0 -20px 40px -10px rgba(251, 113, 133, 0.12);
+  }
+
+  /* Icono en contenedor circular sutil */
+  .ob-icon-wrap {
+    @apply flex h-8 w-8 items-center justify-center rounded-full bg-current/10;
+  }
+
   /* Secondary card / softer section */
   .ob-card-muted {
     @apply bg-muted text-muted-foreground rounded-lg p-4 md:p-6 border border-border;
   }
 
-  /* Section titles */
+  /* Section titles - tonos slate sin glow índigo */
   .ob-page-title {
-    /* Mobile-first: evita que en 768px (md) se vea gigante; escala fuerte recién en lg */
-    @apply text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight;
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-foreground;
   }
 
   .ob-page-subtitle {

@@ -14,7 +14,7 @@ export const MonthSelector = () => {
   });
 
   return (
-    <div className="flex items-center gap-2 bg-background border p-1 rounded-md">
+    <div className="flex items-center gap-2 ob-card-glass px-4 py-3 sm:px-3 sm:py-1.5 rounded-xl min-h-[44px] shrink-0">
       <Button variant="ghost" size="sm" onClick={prevMonth}><ChevronLeft className="h-4 w-4" /></Button>
       <div className="flex items-center gap-2 px-2">
         <Calendar className="h-4 w-4 text-primary" />

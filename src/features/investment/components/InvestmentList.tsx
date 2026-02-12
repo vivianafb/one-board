@@ -22,6 +22,7 @@ function formatDate(dateStr: string) {
 
 export function InvestmentList({ investments }: InvestmentListProps) {
   return (
+    <div className="ob-card-glass overflow-hidden p-4">
     <Table>
       <TableHeader>
         <TableRow>
@@ -40,5 +41,6 @@ export function InvestmentList({ investments }: InvestmentListProps) {
         ))}
       </TableBody>
     </Table>
+    </div>
   );
 }

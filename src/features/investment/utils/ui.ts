@@ -1,3 +1,3 @@
-/** Clase CSS para ganancia (verde) o pérdida (rojo) según el valor. */
+/** Clase CSS para ganancia (emerald) o pérdida (rose) según el valor. */
 export const getGainClass = (value: number) =>
-  value >= 0 ? "text-[var(--success)]" : "text-destructive";
+  value >= 0 ? "ob-amount-income" : "ob-amount-expense";

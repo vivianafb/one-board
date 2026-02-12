@@ -14,7 +14,7 @@ const AddGoalDialog = () => {
       <DialogTrigger asChild>
         <Button className="ob-btn-primary">Nueva Meta</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="ob-card-glass">
         <DialogHeader>
           <DialogTitle>Crear Meta de Ahorro</DialogTitle>
         </DialogHeader>
