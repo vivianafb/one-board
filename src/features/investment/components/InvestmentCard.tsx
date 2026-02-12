@@ -32,7 +32,7 @@ export default function InvestmentCard({ investment }: InvestmentCardProps) {
   
 
   return (
-    <article className="ob-card h-full flex flex-col" aria-label={name}>
+    <article className="ob-card-glass h-full flex flex-col" aria-label={name}>
       <div className="flex justify-between items-start gap-2 mb-1">
         <h3 className="ob-text font-medium truncate">{name}</h3>
         <span

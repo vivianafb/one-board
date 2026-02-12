@@ -30,7 +30,7 @@ export default function InvestmentRow({ investment }: InvestmentRowProps) {
     calculateInvestmentPerformance(investment, selectedMonth);
 
   return (
-    <li className="ob-card">
+    <li className="ob-card-glass">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0 space-y-0.5">
           <div className="flex items-center gap-2 flex-wrap">

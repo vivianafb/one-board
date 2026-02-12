@@ -34,46 +34,52 @@ export function DashboardStats() {
       value: balance,
       icon: Wallet,
       description: "Ingresos - Gastos del mes",
-      color: balance >= 0 ? "text-green-600" : "text-red-600",
+      amountClass: balance >= 0 ? "ob-amount-income" : "ob-amount-expense",
+      iconColor: balance >= 0 ? "text-[var(--income)]" : "text-[var(--expense)]",
     },
     {
       title: "Gastos Fijos",
       value: fixedExpenses,
       icon: TrendingDown,
       description: "Cuentas y servicios básicos",
-      color: "text-red-500",
+      amountClass: "ob-amount-expense",
+      iconColor: "text-[var(--expense)]",
     },
     {
       title: "Gastos Variables",
       value: variableExpenses,
       icon: ArrowDownCircle,
       description: "Consumo diario y extras",
-      color: "text-orange-500",
+      amountClass: "ob-amount-expense",
+      iconColor: "text-amber-400/90",
     },
     {
       title: "Deuda Tarjeta",
       value: creditCardDebt,
       icon: CreditCard,
       description: "Consumo acumulado en crédito",
-      color: "text-blue-600",
+      amountClass: "ob-amount-neutral",
+      iconColor: "text-slate-400",
     },
   ];
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
-        <Card key={stat.title} className="ob-card">
+        <Card key={stat.title} className="ob-card-glass relative overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <CardTitle className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
               {stat.title}
             </CardTitle>
-            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            <div className={`ob-icon-wrap ${stat.iconColor}`}>
+              <stat.icon className="h-4 w-4" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold tabular-nums ${stat.color}`}>
+          <CardContent className="relative">
+            <div className={`text-2xl ${stat.amountClass}`}>
               {formatAmountCLP(stat.value)}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1 italic">
+            <p className="text-[10px] text-slate-500 mt-1 italic tracking-wide">
               {stat.description}
             </p>
           </CardContent>

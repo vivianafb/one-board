@@ -7,7 +7,7 @@ export const GoalCard = ({ goal }: { goal: SavingGoal }) => {
   const progress = (goal.currentAmount / goal.targetAmount) * 100;
 
   return (
-    <Card className="ob-card border-l-4 border-l-primary">
+    <Card className="ob-card-glass border-l-4 border-l-primary">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-md font-semibold">{goal.name}</CardTitle>
@@ -20,8 +20,8 @@ export const GoalCard = ({ goal }: { goal: SavingGoal }) => {
       <CardContent className="space-y-4">
         <div className="flex justify-between items-end">
           <div>
-            <p className="text-2xl font-bold">{formatAmountCLP(goal.currentAmount)}</p>
-            <p className="text-xs text-muted-foreground">Meta: {formatAmountCLP(goal.targetAmount)}</p>
+            <p className="text-2xl font-bold tracking-tighter tabular-nums">{formatAmountCLP(goal.currentAmount)}</p>
+            <p className="text-[10px] text-slate-500">Meta: {formatAmountCLP(goal.targetAmount)}</p>
           </div>
           <span className="text-sm font-medium">{progress.toFixed(0)}%</span>
         </div>

@@ -11,9 +11,9 @@ export default function SavingsPage() {
   const goals = useSavingsStore((state) => state.goals); 
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Ahorros</h1>
+        <h1 className="ob-page-title">Ahorros</h1>
         <AddGoalDialog />
       </div>
 
@@ -21,7 +21,7 @@ export default function SavingsPage() {
         <SavingsCard totalSaved={totalSaved} />
       </div>
 
-      <h2 className="text-xl font-semibold mt-8">Mis Metas</h2>
+      <h2 className="text-lg font-semibold text-foreground">Mis Metas</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {goals.map((goal) => (
           <GoalCard key={goal.id} goal={goal} />
