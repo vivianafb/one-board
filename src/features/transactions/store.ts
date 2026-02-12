@@ -10,7 +10,7 @@ export type TransactionsActions = {
 };
 export type TransactionsStore = {
     items: Transaction[];
-    actions: TransactionsActions; // Ahora sí existe 'actions'
+    actions: TransactionsActions; 
 };
 
 type TransactionsStoreCreator = StateCreator<TransactionsStore>;

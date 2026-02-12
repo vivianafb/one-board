@@ -34,18 +34,16 @@ const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
       set((state) => ({ monthlyHistory: [...state.monthlyHistory, saving] })),
     addDeposit: (goalId: string, amount: number, monthId: string) =>
     set((state) => ({
-      // 1. Actualizamos el monto actual de la meta
       goals: state.goals.map((g) =>
         g.id === goalId ? { ...g, currentAmount: g.currentAmount + amount } : g
       ),
-      // 2. Registramos el movimiento en el historial
       monthlyHistory: [
         ...state.monthlyHistory,
         {
           id: crypto.randomUUID(),
           goalId,
           amount,
-          monthId, // Ej: "2026-01"
+          monthId, 
           currency: state.goals.find(g => g.id === goalId)?.currency || "CLP",
           createdAt: new Date().toISOString(),
         },
@@ -58,7 +56,6 @@ const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
 export const useSavingsStore = create<SavingsStore>()(
   persist(savingsStoreCreator, {
     name: "savings-store",
-    // Persistimos tanto las metas como el historial mensual
     partialize: (state) => ({ 
       goals: state.goals, 
       monthlyHistory: state.monthlyHistory 

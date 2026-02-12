@@ -17,7 +17,6 @@ const SideBar = () => {
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
   const closeSidebar = useUIStore((s) => s.closeSidebar);
     
-  // Evita "flash" antes de hidratar (mobile-first: cerrado).
   const sidebarOpen = isHydrated ? isOpen : false;
   
   const menuItems = [
@@ -27,13 +26,11 @@ const SideBar = () => {
     { href: "/investments", label: "Inversiones", icon: TrendingUp },
   ];
 
-  // En móvil: al navegar, cerramos el drawer.
   React.useEffect(() => {
     closeSidebar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  // En móvil: ESC cierra el drawer.
   React.useEffect(() => {
     if (!sidebarOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -45,7 +42,6 @@ const SideBar = () => {
 
   return (
     <>
-      {/* Mobile drawer */}
       <div className={cn("md:hidden", sidebarOpen ? "pointer-events-auto" : "pointer-events-none")}>
         <div
           className={cn(
@@ -110,7 +106,6 @@ const SideBar = () => {
         </aside>
       </div>
 
-      {/* Desktop sidebar (colapsable) */}
       <aside
         className="hidden md:flex bg-sidebar/80 backdrop-blur-xl border-r border-sidebar-border/50 flex-col flex-shrink-0 shadow-lg overflow-hidden"
         style={{
