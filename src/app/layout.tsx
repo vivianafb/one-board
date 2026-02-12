@@ -12,8 +12,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "OneBoard",
-  description: "OneBoard Dashboard",
+  title: 'OneBoard | Dashboard Financiero',
+  description: 'Gestión inteligente de gastos e inversiones personales.',
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
         <div className="flex min-h-screen w-full">
           <SideBar />
