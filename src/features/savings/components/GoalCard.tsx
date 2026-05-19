@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress"; // Componente de Shadcn
+import { Progress } from "@/components/ui/progress";
 import { formatAmountCLP, formatSavingGoalCategory } from "@/lib/format";
 import { SavingGoal } from "@/types/finance";
 import { DepositDialog } from "./DepositDialog";

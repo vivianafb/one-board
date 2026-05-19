@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import SideBar from "@/components/Home/SideBar";
 import Navbar from "@/components/Home/Navbar";
 import Footer from "@/components/Home/Footer";
+import MSWProvider from "@/components/MSWProvider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -24,14 +25,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
-        <div className="flex min-h-screen w-full">
-          <SideBar />
-          <main className="flex-1 flex flex-col min-w-0 bg-background text-foreground">
-            <Navbar />
-            <section className="ob-page flex-1">{children}</section>
-            <Footer />
-          </main>
-        </div>
+        <MSWProvider>
+          <div className="flex min-h-screen w-full">
+            <SideBar />
+            <main className="flex-1 flex flex-col min-w-0 bg-background text-foreground">
+              <Navbar />
+              <section className="ob-page flex-1">{children}</section>
+              <Footer />
+            </main>
+          </div>
+        </MSWProvider>
       </body>
     </html>
   );
