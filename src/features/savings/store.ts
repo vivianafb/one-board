@@ -1,7 +1,7 @@
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 import { SavingGoal, MonthlySaving, SavingsState } from "@/types/finance";
-import savings from "@/mocks/savings";
+import { fetchSavings } from "@/services/api";
 
 type SavingsActions = {
   addGoal: (goal: SavingGoal) => void;
@@ -9,56 +9,64 @@ type SavingsActions = {
   deleteGoal: (id: string) => void;
   addMonthlySaving: (saving: MonthlySaving) => void;
   addDeposit: (goalId: string, amount: number, monthId: string) => void;
+  initialize: () => Promise<void>;
 };
 
 export type SavingsStore = SavingsState & {
+  isLoading: boolean;
   actions: SavingsActions;
 };
 
 const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
-  goals: savings,
+  goals: [],
   monthlyHistory: [],
+  isLoading: false,
   actions: {
+    initialize: async () => {
+      set({ isLoading: true });
+      try {
+        const goals = await fetchSavings();
+        set({ goals });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
     addGoal: (goal) =>
       set((state) => ({ goals: [...state.goals, goal] })),
-    
     updateGoal: (id, patch) =>
       set((state) => ({
         goals: state.goals.map((g) => (g.id === id ? { ...g, ...patch } : g)),
       })),
-      
     deleteGoal: (id) =>
       set((state) => ({ goals: state.goals.filter((g) => g.id !== id) })),
-      
     addMonthlySaving: (saving) =>
       set((state) => ({ monthlyHistory: [...state.monthlyHistory, saving] })),
-    addDeposit: (goalId: string, amount: number, monthId: string) =>
-    set((state) => ({
-      goals: state.goals.map((g) =>
-        g.id === goalId ? { ...g, currentAmount: g.currentAmount + amount } : g
-      ),
-      monthlyHistory: [
-        ...state.monthlyHistory,
-        {
-          id: crypto.randomUUID(),
-          goalId,
-          amount,
-          monthId, 
-          currency: state.goals.find(g => g.id === goalId)?.currency || "CLP",
-          createdAt: new Date().toISOString(),
-        },
-      ],
-    })),
+    addDeposit: (goalId, amount, monthId) =>
+      set((state) => ({
+        goals: state.goals.map((g) =>
+          g.id === goalId ? { ...g, currentAmount: g.currentAmount + amount } : g
+        ),
+        monthlyHistory: [
+          ...state.monthlyHistory,
+          {
+            id: crypto.randomUUID(),
+            goalId,
+            amount,
+            monthId,
+            currency: state.goals.find((g) => g.id === goalId)?.currency || "CLP",
+            createdAt: new Date().toISOString(),
+          },
+        ],
+      })),
   },
 });
-
 
 export const useSavingsStore = create<SavingsStore>()(
   persist(savingsStoreCreator, {
     name: "savings-store",
-    partialize: (state) => ({ 
-      goals: state.goals, 
-      monthlyHistory: state.monthlyHistory 
+    partialize: (state) => ({
+      goals: state.goals,
+      monthlyHistory: state.monthlyHistory,
     }),
   })
 );
