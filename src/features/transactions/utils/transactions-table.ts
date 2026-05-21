@@ -1,4 +1,5 @@
-import type { Transaction } from "@/types/finance";
+import type { Transaction, ExpenseType } from "@/types/finance";
+import type { PaymentMethod } from "@/lib/transaction-options";
 
 export type PaginationData<T = Transaction> = {
   paginatedTransactions: T[];
@@ -62,6 +63,38 @@ export function buildTransactionForAdd(form: Partial<Transaction>): Omit<Transac
       expenseCategory: form.expenseCategory ?? "OTHERS",
     }),
   };
+}
+
+export type CuotaParams = {
+  itemName: string;
+  totalAmount: number;
+  cuotaCount: number;
+  baseDate: string;
+  expenseType: ExpenseType;
+  expenseCategory: string;
+  paymentMethod: PaymentMethod;
+};
+
+function addMonths(dateStr: string, months: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, m - 1 + months, d);
+  return date.toISOString().slice(0, 10);
+}
+
+export function buildCuotaTransactions(params: CuotaParams): Transaction[] {
+  const groupId = crypto.randomUUID();
+  const amountPerCuota = Math.round(params.totalAmount / params.cuotaCount);
+  return Array.from({ length: params.cuotaCount }, (_, i) => ({
+    id: crypto.randomUUID(),
+    description: `${params.itemName} (cuota ${i + 1}/${params.cuotaCount})`,
+    amountCLP: amountPerCuota,
+    type: "expense" as const,
+    paymentMethod: params.paymentMethod,
+    createdAt: addMonths(params.baseDate, i),
+    expenseType: params.expenseType,
+    expenseCategory: params.expenseCategory,
+    installment: { groupId, itemName: params.itemName, current: i + 1, total: params.cuotaCount },
+  }));
 }
 
 export function buildTransactionPatch(form: Partial<Transaction>): Partial<Transaction> {

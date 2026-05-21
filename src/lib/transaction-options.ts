@@ -3,21 +3,28 @@
  * Agregar nuevas opciones SOLO aquí; se usan automáticamente en tipos, formatos y selects.
  */
 
-export const EXPENSE_CATEGORY_OPTIONS = {
-  FOOD: "Comida",
-  SUPERMARKET: "Supermercado",
-  PETS: "Mascotas",
-  HEALTH: "Salud",
-  BEAUTY: "Belleza",
+export const EXPENSE_CATEGORY_OPTIONS: Record<string, string> = {
+  // Fijos
   RENT: "Alquiler",
-  TRANSPORT: "Transporte",
-  SERVICES: "Servicios",
-  ENTERTAINMENT: "Entretenimiento",
+  ELECTRICITY: "Luz",
+  WATER: "Agua",
+  INTERNET: "Internet",
   SUSCRIPTIONS: "Suscripciones",
+  INSURANCE: "Seguros",
+  SERVICES: "Servicios",
+  // Variables
+  SUPERMARKET: "Supermercado",
+  FOOD: "Comida",
+  TRANSPORT: "Transporte",
+  HEALTH: "Salud",
+  PHARMACY: "Farmacia",
+  ENTERTAINMENT: "Entretenimiento",
   OTHERS: "Otros",
-} as const;
+  PETS: "Mascotas",
+  BEAUTY: "Belleza",
+};
 
-export type ExpenseCategory = keyof typeof EXPENSE_CATEGORY_OPTIONS;
+export type ExpenseCategory = string;
 
 export const PAYMENT_METHOD_OPTIONS = {
   cash: "Efectivo",
@@ -36,9 +43,9 @@ export const EXPENSE_TYPE_OPTIONS = {
 export type ExpenseType = keyof typeof EXPENSE_TYPE_OPTIONS;
 
 /** Array para usar en selects: [{ value, label }] */
-export const EXPENSE_CATEGORY_SELECT_OPTIONS = (
-  Object.entries(EXPENSE_CATEGORY_OPTIONS) as [ExpenseCategory, string][]
-).map(([value, label]) => ({ value, label }));
+export const EXPENSE_CATEGORY_SELECT_OPTIONS = Object.entries(EXPENSE_CATEGORY_OPTIONS).map(
+  ([value, label]) => ({ value, label })
+);
 
 export const PAYMENT_METHOD_SELECT_OPTIONS = (
   Object.entries(PAYMENT_METHOD_OPTIONS) as [PaymentMethod, string][]

@@ -2,23 +2,57 @@
 
 import { useMemo } from "react";
 import { useTransactionsStore } from "@/features/transactions/store";
+import { useInvestmentStore } from "@/features/investment/store";
 import { useConfigStore } from "@/features/config/store";
 import { selectTransactionStats } from "@/features/transactions/selectors";
+import type { TransactionsStore } from "@/features/transactions/store";
 import { buildDashboardStats } from "@/features/dashboard/utils/dashboard-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatAmountCLP } from "@/lib/format";
-import { useShallow } from "zustand/react/shallow";
+
+const USD_TO_CLP = 1000;
 
 export function DashboardStats() {
   const selectedMonth = useConfigStore((s) => s.selectedMonth);
 
-  const transactionStats = useTransactionsStore(
-    useShallow((state) => selectTransactionStats(state, selectedMonth))
+  const txItems = useTransactionsStore((s) => s.items);
+  const txStats = useMemo(
+    () => selectTransactionStats({ items: txItems } as TransactionsStore, selectedMonth),
+    [txItems, selectedMonth]
+  );
+
+  const investments = useInvestmentStore((s) => s.items);
+
+  const portfolioValue = useMemo(
+    () =>
+      investments.reduce(
+        (sum, inv) =>
+          sum + (inv.currency === "CLP" ? inv.currentValue : inv.currentValue * USD_TO_CLP),
+        0
+      ),
+    [investments]
+  );
+
+  const portfolioInvested = useMemo(
+    () =>
+      investments.reduce(
+        (sum, inv) =>
+          sum + (inv.currency === "CLP" ? inv.investedAmount : inv.investedAmount * USD_TO_CLP),
+        0
+      ),
+    [investments]
   );
 
   const stats = useMemo(
-    () => buildDashboardStats(transactionStats),
-    [transactionStats]
+    () =>
+      buildDashboardStats({
+        totalIncomes: txStats.totalIncomes,
+        totalExpenses: txStats.totalExpenses,
+        balance: txStats.balance,
+        portfolioValue,
+        portfolioInvested,
+      }),
+    [txStats, portfolioValue, portfolioInvested]
   );
 
   return (
@@ -37,7 +71,7 @@ export function DashboardStats() {
             <div className={`text-2xl ${stat.amountClass}`}>
               {formatAmountCLP(stat.value)}
             </div>
-            <p className="text-[10px] text-slate-500 mt-1 italic tracking-wide">
+            <p className={`text-[10px] mt-1 italic tracking-wide ${stat.descriptionClass ?? "text-slate-500"}`}>
               {stat.description}
             </p>
           </CardContent>

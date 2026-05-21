@@ -6,7 +6,7 @@ import { formatAmountCLP, formatPaymentMethod, formatExpenseCategory } from "@/l
 import type { Transaction } from "@/types/finance";
 import { Pencil, Trash2 } from "lucide-react";
 import { useTransactionsStore } from "../store";
-import { useShallow } from "zustand/react/shallow";
+import type { TransactionsStore } from "../store";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "../constants";
 import { selectTransactionStats } from "../selectors";
 import { useConfigStore } from "@/features/config/store";
@@ -15,9 +15,13 @@ import {
   getInitialTransactionForm,
   buildTransactionForAdd,
   buildTransactionPatch,
+  buildCuotaTransactions,
+  type CuotaParams,
 } from "../utils/transactions-table";
 import { TransactionForm } from "./TransactionForm";
 import { TablePagination } from "./TablePagination";
+import { ExpenseBreakdown } from "./ExpenseBreakdown";
+import { InstallmentDebts } from "./InstallmentDebts";
 
 function AmountCell({ transaction }: { transaction: Transaction }) {
   const isIncome = transaction.type === "income";
@@ -72,11 +76,12 @@ function StatsCards({
 export function TransactionsTable() {
   const items = useTransactionsStore((s) => s.items);
   const selectedMonth = useConfigStore((s) => s.selectedMonth);
-  const { add, update, delete: deleteTransaction } = useTransactionsStore(
+  const { add, addMany, update, delete: deleteTransaction } = useTransactionsStore(
     (s) => s.actions
   );
-  const { balance, fixedExpenses, variableExpenses } = useTransactionsStore(
-    useShallow((state) => selectTransactionStats(state, selectedMonth))
+  const { balance, fixedExpenses, variableExpenses } = useMemo(
+    () => selectTransactionStats({ items } as TransactionsStore, selectedMonth),
+    [items, selectedMonth]
   );
 
   const filteredItems = useMemo(
@@ -120,6 +125,15 @@ export function TransactionsTable() {
       setShowAddForm(false);
     },
     [newTransaction, add]
+  );
+
+  const handleCuotaSubmit = useCallback(
+    (params: CuotaParams) => {
+      addMany(buildCuotaTransactions(params));
+      setNewTransaction(getInitialTransactionForm());
+      setShowAddForm(false);
+    },
+    [addMany]
   );
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -178,6 +192,10 @@ export function TransactionsTable() {
         variableExpenses={variableExpenses}
       />
 
+      <InstallmentDebts />
+
+      <ExpenseBreakdown />
+
       <div className="space-y-3">
         <button type="button" className="ob-btn-primary" onClick={toggleAddForm}>
           {showAddForm ? "Cancelar" : "Agregar transacción"}
@@ -202,6 +220,7 @@ export function TransactionsTable() {
             values={newTransaction}
             onChange={setNewTransaction}
             onSubmit={handleAddSubmit}
+            onCuotaSubmit={handleCuotaSubmit}
             submitLabel="Guardar"
           />
         )}
@@ -222,7 +241,16 @@ export function TransactionsTable() {
           <TableBody>
             {paginationData.paginatedTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
-                <TableCell>{transaction.description}</TableCell>
+                <TableCell>
+                  <span className="flex items-center gap-2 flex-wrap">
+                    {transaction.description}
+                    {transaction.installment && (
+                      <span className="shrink-0 rounded-full bg-violet-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-violet-300">
+                        Cuota {transaction.installment.current}/{transaction.installment.total}
+                      </span>
+                    )}
+                  </span>
+                </TableCell>
                 <TableCell>{transaction.createdAt}</TableCell>
                 <AmountCell transaction={transaction} />
                 <TableCell className="text-muted-foreground">

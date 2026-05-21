@@ -9,6 +9,7 @@ const buildState = (items: Transaction[]): TransactionsStore => ({
   isLoading: false,
   actions: {
     add: jest.fn(),
+    addMany: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
     initialize: jest.fn(),

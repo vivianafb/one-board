@@ -49,8 +49,9 @@ export function formatExpenseType(type?: keyof typeof EXPENSE_TYPE_OPTIONS): str
 /**
  * Formatea la categoría de gasto (rubro) para mostrarla al usuario.
  */
-export function formatExpenseCategory(category?: keyof typeof EXPENSE_CATEGORY_OPTIONS): string {
-  return category ? EXPENSE_CATEGORY_OPTIONS[category] : '—';
+export function formatExpenseCategory(category?: string): string {
+  if (!category) return '—';
+  return EXPENSE_CATEGORY_OPTIONS[category] ?? category;
 }
 
 const SAVING_GOAL_CATEGORY_LABELS: Record<SavingGoalCategory, string> = {

@@ -5,6 +5,7 @@ import { fetchTransactions } from "@/services/api";
 
 export type TransactionsActions = {
   add: (transaction: Transaction) => void;
+  addMany: (transactions: Transaction[]) => void;
   update: (id: string, patch: Partial<Transaction>) => void;
   delete: (id: string) => void;
   initialize: () => Promise<void>;
@@ -33,6 +34,8 @@ const transactionsStoreCreator: TransactionsStoreCreator = (set) => ({
     },
     add: (transaction) =>
       set((state) => ({ items: [...state.items, transaction] })),
+    addMany: (transactions) =>
+      set((state) => ({ items: [...state.items, ...transactions] })),
     update: (id, patch) =>
       set((state) => ({
         items: state.items.map((t) => (t.id === id ? { ...t, ...patch } : t)),
