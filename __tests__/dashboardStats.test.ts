@@ -1,12 +1,13 @@
-import { buildDashboardStats, TransactionStats } from "@/features/dashboard/utils/dashboard-stats";
+import { buildDashboardStats, DashboardStatsInput } from "@/features/dashboard/utils/dashboard-stats";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const buildStats = (overrides: Partial<TransactionStats> = {}): TransactionStats => ({
+const buildInput = (overrides: Partial<DashboardStatsInput> = {}): DashboardStatsInput => ({
+  totalIncomes: 0,
+  totalExpenses: 0,
   balance: 0,
-  fixedExpenses: 0,
-  variableExpenses: 0,
-  creditCardDebt: 0,
+  portfolioValue: 0,
+  portfolioInvested: 0,
   ...overrides,
 });
 
@@ -15,24 +16,24 @@ const buildStats = (overrides: Partial<TransactionStats> = {}): TransactionStats
 describe("buildDashboardStats", () => {
   describe("result structure", () => {
     it("should return exactly 4 stat cards", () => {
-      const result = buildDashboardStats(buildStats());
+      const result = buildDashboardStats(buildInput());
       expect(result).toHaveLength(4);
     });
 
-    it("should return cards in order: balance, fixed expenses, variable expenses, credit card debt", () => {
-      const result = buildDashboardStats(buildStats());
+    it("should return cards in order: ingresos, gastos, balance, portfolio", () => {
+      const result = buildDashboardStats(buildInput());
       const titles = result.map((card) => card.title);
 
       expect(titles).toEqual([
-        "Balance Mensual",
-        "Gastos Fijos",
-        "Gastos Variables",
-        "Deuda Tarjeta",
+        "Ingresos del mes",
+        "Gastos del mes",
+        "Balance mensual",
+        "Portfolio",
       ]);
     });
 
     it("should include icon, description and amountClass on every card", () => {
-      const result = buildDashboardStats(buildStats());
+      const result = buildDashboardStats(buildInput());
 
       result.forEach((card) => {
         expect(card.icon).toBeDefined();
@@ -46,22 +47,24 @@ describe("buildDashboardStats", () => {
 
   describe("value mapping", () => {
     it("should assign the correct value to each card", () => {
-      const stats = buildStats({
-        balance: 300_000,
-        fixedExpenses: 150_000,
-        variableExpenses: 80_000,
-        creditCardDebt: 40_000,
-      });
-      const result = buildDashboardStats(stats);
+      const result = buildDashboardStats(
+        buildInput({
+          totalIncomes: 1_000_000,
+          totalExpenses: 700_000,
+          balance: 300_000,
+          portfolioValue: 5_000_000,
+          portfolioInvested: 4_500_000,
+        })
+      );
 
-      expect(result[0].value).toBe(300_000);
-      expect(result[1].value).toBe(150_000);
-      expect(result[2].value).toBe(80_000);
-      expect(result[3].value).toBe(40_000);
+      expect(result[0].value).toBe(1_000_000); // ingresos
+      expect(result[1].value).toBe(700_000);   // gastos
+      expect(result[2].value).toBe(300_000);   // balance
+      expect(result[3].value).toBe(5_000_000); // portfolio
     });
 
     it("should handle all values being zero", () => {
-      const result = buildDashboardStats(buildStats());
+      const result = buildDashboardStats(buildInput());
 
       result.forEach((card) => {
         expect(card.value).toBe(0);
@@ -69,55 +72,67 @@ describe("buildDashboardStats", () => {
     });
   });
 
-  describe("dynamic balance styling", () => {
-    it("should apply income style when balance is positive", () => {
-      const result = buildDashboardStats(buildStats({ balance: 100_000 }));
-      const balanceCard = result[0];
-
-      expect(balanceCard.amountClass).toBe("ob-amount-income");
-      expect(balanceCard.iconColor).toBe("text-[var(--income)]");
-    });
-
-    it("should apply expense style when balance is negative", () => {
-      const result = buildDashboardStats(buildStats({ balance: -50_000 }));
-      const balanceCard = result[0];
-
-      expect(balanceCard.amountClass).toBe("ob-amount-expense");
-      expect(balanceCard.iconColor).toBe("text-[var(--expense)]");
-    });
-
-    it("should apply income style when balance is exactly zero", () => {
-      const result = buildDashboardStats(buildStats({ balance: 0 }));
-      const balanceCard = result[0];
-
-      expect(balanceCard.amountClass).toBe("ob-amount-income");
-      expect(balanceCard.iconColor).toBe("text-[var(--income)]");
+  describe("ingresos card - fixed style", () => {
+    it("should always have income style", () => {
+      const result = buildDashboardStats(buildInput({ totalIncomes: 500_000 }));
+      expect(result[0].amountClass).toBe("ob-amount-income");
+      expect(result[0].iconColor).toBe("text-[var(--income)]");
     });
   });
 
-  describe("fixed styles on other cards", () => {
-    it("should keep expense style on fixed expenses regardless of value", () => {
-      const resultHigh = buildDashboardStats(buildStats({ fixedExpenses: 999_999 }));
-      const resultZero = buildDashboardStats(buildStats({ fixedExpenses: 0 }));
+  describe("gastos card - fixed style", () => {
+    it("should always have expense style", () => {
+      const result = buildDashboardStats(buildInput({ totalExpenses: 300_000 }));
+      expect(result[1].amountClass).toBe("ob-amount-expense");
+      expect(result[1].iconColor).toBe("text-[var(--expense)]");
+    });
+  });
 
-      expect(resultHigh[1].amountClass).toBe("ob-amount-expense");
-      expect(resultZero[1].amountClass).toBe("ob-amount-expense");
+  describe("balance card - dynamic styling", () => {
+    it("should apply income style when balance is positive", () => {
+      const result = buildDashboardStats(buildInput({ balance: 100_000 }));
+      expect(result[2].amountClass).toBe("ob-amount-income");
+      expect(result[2].iconColor).toBe("text-[var(--income)]");
     });
 
-    it("should keep expense style on variable expenses regardless of value", () => {
-      const resultHigh = buildDashboardStats(buildStats({ variableExpenses: 999_999 }));
-      const resultZero = buildDashboardStats(buildStats({ variableExpenses: 0 }));
-
-      expect(resultHigh[2].amountClass).toBe("ob-amount-expense");
-      expect(resultZero[2].amountClass).toBe("ob-amount-expense");
+    it("should apply expense style when balance is negative", () => {
+      const result = buildDashboardStats(buildInput({ balance: -50_000 }));
+      expect(result[2].amountClass).toBe("ob-amount-expense");
+      expect(result[2].iconColor).toBe("text-[var(--expense)]");
     });
 
-    it("should keep neutral style on credit card debt regardless of value", () => {
-      const resultHigh = buildDashboardStats(buildStats({ creditCardDebt: 999_999 }));
-      const resultZero = buildDashboardStats(buildStats({ creditCardDebt: 0 }));
+    it("should apply income style when balance is exactly zero", () => {
+      const result = buildDashboardStats(buildInput({ balance: 0 }));
+      expect(result[2].amountClass).toBe("ob-amount-income");
+      expect(result[2].iconColor).toBe("text-[var(--income)]");
+    });
+  });
 
-      expect(resultHigh[3].amountClass).toBe("ob-amount-neutral");
-      expect(resultZero[3].amountClass).toBe("ob-amount-neutral");
+  describe("portfolio card - dynamic styling", () => {
+    it("should apply income style and positive description when gain > 0", () => {
+      const result = buildDashboardStats(
+        buildInput({ portfolioValue: 1_100_000, portfolioInvested: 1_000_000 })
+      );
+      const card = result[3];
+      expect(card.amountClass).toBe("ob-amount-neutral");
+      expect(card.iconColor).toBe("text-[var(--income)]");
+      expect(card.description).toBe("+10.0% vs invertido");
+      expect(card.descriptionClass).toBe("text-emerald-400");
+    });
+
+    it("should apply expense style and negative description when gain < 0", () => {
+      const result = buildDashboardStats(
+        buildInput({ portfolioValue: 900_000, portfolioInvested: 1_000_000 })
+      );
+      const card = result[3];
+      expect(card.iconColor).toBe("text-[var(--expense)]");
+      expect(card.description).toBe("-10.0% vs invertido");
+      expect(card.descriptionClass).toBe("text-rose-400");
+    });
+
+    it("should show 0.0% when portfolioInvested is zero", () => {
+      const result = buildDashboardStats(buildInput({ portfolioValue: 0, portfolioInvested: 0 }));
+      expect(result[3].description).toBe("+0.0% vs invertido");
     });
   });
 });

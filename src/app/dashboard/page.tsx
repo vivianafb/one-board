@@ -3,6 +3,7 @@
 import { MonthSelector } from "@/features/components/MonthSelector";
 import { DashboardStats } from "@/features/dashboard/components/DashboardStats";
 import { CategoryPieChart } from "@/features/dashboard/components/CategoryPieChart";
+import { IncomeExpenseBarChart } from "@/features/dashboard/components/IncomeExpenseBarChart";
 
 export default function DashboardPage() {
   return (
@@ -16,9 +17,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-7 w-full min-w-0">
         <CategoryPieChart />
-        <div className="ob-card-glass col-span-full md:col-span-4 flex items-center justify-center text-card-foreground/70 italic min-h-[140px] md:min-h-[200px] py-8 px-4">
-          Coming Soon...
-        </div>
+        <IncomeExpenseBarChart />
       </div>
     </div>
   );

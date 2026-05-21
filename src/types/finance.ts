@@ -29,6 +29,13 @@ export interface Investment {
 // --- Transacciones ---
 export type TransactionType = "income" | "expense";
 export type { ExpenseType, PaymentMethod, ExpenseCategory } from "@/lib/transaction-options";
+export interface TransactionInstallment {
+  groupId: string;
+  itemName: string;
+  current: number;
+  total: number;
+}
+
 export interface Transaction {
   id: string;
   amountCLP: number;
@@ -36,8 +43,9 @@ export interface Transaction {
   type: TransactionType;
   createdAt: string;
   paymentMethod: PaymentMethod;
-  expenseType?: ExpenseType; 
+  expenseType?: ExpenseType;
   expenseCategory?: ExpenseCategory;
+  installment?: TransactionInstallment;
 }
 
 export type SavingGoalCategory = 'EMERGENCY_FUND' | 'TRAVEL' | 'HOME' | 'RETIREMENT' | 'OTHER' ;

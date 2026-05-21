@@ -1,30 +1,23 @@
 "use client";
 
 import { useInvestmentStore } from "../store";
-import { useShallow } from "zustand/react/shallow";
-import { selectFilteredItems } from "../selectors";
 import { useConfigStore } from "@/features/config/store";
-import { InvestmentList } from "./InvestmentList";
-import { InvestmentSummary } from "./InvestmentSummary";
+import { PortfolioCard } from "./PortfolioCard";
+import { InvestmentTable } from "./InvestmentTable";
+import { MonthlyDetail } from "./MonthlyDetail";
 import { EmptyInvestmentsState } from "./EmptyInvestmentsState";
 
 export function InvestmentsView() {
   const selectedMonth = useConfigStore((s) => s.selectedMonth);
-  const filteredItems = useInvestmentStore(useShallow(selectFilteredItems(selectedMonth)));
+  const items = useInvestmentStore((s) => s.items);
+
+  if (items.length === 0) return <EmptyInvestmentsState />;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {filteredItems.length > 0 && (
-          <InvestmentSummary investments={filteredItems} />
-        )}
-      </div>
-
-      {filteredItems.length === 0 ? (
-        <EmptyInvestmentsState />
-      ) : (
-        <InvestmentList investments={filteredItems} />
-      )}
+      <PortfolioCard investments={items} />
+      <InvestmentTable investments={items} />
+      {selectedMonth && <MonthlyDetail investments={items} periodId={selectedMonth} />}
     </div>
   );
 }
