@@ -13,8 +13,25 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'OneBoard | Dashboard Financiero',
-  description: 'Gestión inteligente de gastos e inversiones personales.',
+  title: "OneBoard | Personal Finance Dashboard",
+  description:
+    "Personal finance dashboard built with Next.js, TypeScript, Zustand and Recharts. Demonstrates frontend architecture, state management and data visualization.",
+  keywords: [
+    "Next.js",
+    "TypeScript",
+    "Zustand",
+    "Recharts",
+    "dashboard",
+    "personal finance",
+    "frontend architecture",
+  ],
+  authors: [{ name: "Viviana Fajardo" }],
+  openGraph: {
+    title: "OneBoard | Personal Finance Dashboard",
+    description:
+      "Frontend architecture demo — Next.js + TypeScript + Zustand",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

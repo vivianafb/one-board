@@ -4,10 +4,12 @@ import { MonthSelector } from "@/features/components/MonthSelector";
 import { DashboardStats } from "@/features/dashboard/components/DashboardStats";
 import { CategoryPieChart } from "@/features/dashboard/components/CategoryPieChart";
 import { IncomeExpenseBarChart } from "@/features/dashboard/components/IncomeExpenseBarChart";
+import { DemoBanner } from "@/components/DemoBanner";
 
 export default function DashboardPage() {
   return (
     <div className="space-y-8 w-full min-w-0">
+      <DemoBanner />
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <h1 className="ob-page-title">Dashboard</h1>
         <MonthSelector />
