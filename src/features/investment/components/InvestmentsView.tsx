@@ -11,6 +11,7 @@ import { MonthlyDetail } from "./MonthlyDetail";
 import { EmptyInvestmentsState } from "./EmptyInvestmentsState";
 import { InvestmentFormDialog } from "./InvestmentFormDialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { MonthSelector } from "@/features/components/MonthSelector";
 
 export function InvestmentsView() {
   const selectedMonth = useConfigStore((s) => s.selectedMonth);
@@ -42,7 +43,8 @@ export function InvestmentsView() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-3">
+        <MonthSelector />
         <button
           type="button"
           onClick={() => setFormOpen(true)}
