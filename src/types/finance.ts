@@ -5,7 +5,7 @@ export type Currency = "CLP" | "USD";
 export type YearMonth = `${number}-${number}`; // Tipado fuerte para fechas YYYY-MM
 
 // --- Inversiones ---
-export type InvestmentType = "ETF" | "CASH_INTEREST";
+export type InvestmentType = "ETF" | "CASH_INTEREST" | "CRYPTO" | "STOCK";
 
 export interface InvestmentPeriod {
   periodId: string; 

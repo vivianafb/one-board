@@ -49,7 +49,7 @@ const investments: Investment[] = [
   {
     id: "inv-3",
     name: "Bitcoin",
-    type: "ETF",
+    type: "CRYPTO",
     provider: "Buda.com",
     currency: "USD",
     investedAmount: 800,
@@ -110,7 +110,7 @@ const investments: Investment[] = [
   {
     id: "inv-6",
     name: "Acciones FALABELLA",
-    type: "ETF",
+    type: "STOCK",
     provider: "Renta4",
     currency: "CLP",
     investedAmount: 450000,
