@@ -27,7 +27,7 @@ const transactionsStoreCreator: TransactionsStoreCreator = (set) => ({
       set({ isLoading: true });
       try {
         const items = await fetchTransactions();
-        set({ items });
+        set((state) => ({ items: state.items.length === 0 ? items : state.items }));
       } finally {
         set({ isLoading: false });
       }

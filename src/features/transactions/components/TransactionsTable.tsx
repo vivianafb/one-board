@@ -204,7 +204,7 @@ export function TransactionsTable() {
         {editingId && (
           <TransactionForm
             values={editTransaction}
-            onChange={setEditTransaction}
+            onChange={(updates) => setEditTransaction((prev) => ({ ...prev, ...updates }))}
             onSubmit={handleEditSubmit}
             submitLabel="Guardar"
             title="Editar transacción"
@@ -218,7 +218,7 @@ export function TransactionsTable() {
         {showAddForm && (
           <TransactionForm
             values={newTransaction}
-            onChange={setNewTransaction}
+            onChange={(updates) => setNewTransaction((prev) => ({ ...prev, ...updates }))}
             onSubmit={handleAddSubmit}
             onCuotaSubmit={handleCuotaSubmit}
             submitLabel="Guardar"

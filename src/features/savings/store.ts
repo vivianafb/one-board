@@ -26,7 +26,7 @@ const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
       set({ isLoading: true });
       try {
         const goals = await fetchSavings();
-        set({ goals });
+        set((state) => ({ goals: state.goals.length === 0 ? goals : state.goals }));
       } finally {
         set({ isLoading: false });
       }
