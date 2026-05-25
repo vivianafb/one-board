@@ -9,6 +9,8 @@ import { getGainClass } from "../utils/ui";
 const TYPE_LABELS: Record<Investment["type"], string> = {
   ETF: "ETF",
   CASH_INTEREST: "Interés en efectivo",
+  CRYPTO: "Crypto",
+  STOCK: "Acción",
 };
 
 type InvestmentCardProps = {

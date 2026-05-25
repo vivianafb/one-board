@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useInvestmentStore } from "../store";
@@ -54,7 +54,7 @@ export function InvestmentFormDialog({ open, onOpenChange, investment }: Props) 
   const isEdit = !!investment;
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormValues>,
     values: investment
       ? {
           name: investment.name,
