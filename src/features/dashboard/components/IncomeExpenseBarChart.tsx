@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useTransactionsStore } from "@/features/transactions/store";
+import { useConfigStore } from "@/features/config/store";
 import { formatAmountCLP } from "@/lib/format";
 import { getPrevMonth } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,10 +20,8 @@ import { Card, CardContent } from "@/components/ui/card";
 const INCOME_COLOR = "#22c55e";
 const EXPENSE_COLOR = "#f43f5e";
 
-function getLast6Months(): string[] {
-  const today = new Date();
-  const ym = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
-  const months: string[] = [ym];
+function getLast6Months(endMonth: string): string[] {
+  const months: string[] = [endMonth];
   for (let i = 1; i < 6; i++) months.unshift(getPrevMonth(months[0]));
   return months;
 }
@@ -61,9 +60,10 @@ function TooltipContent({
 
 export function IncomeExpenseBarChart() {
   const items = useTransactionsStore((s) => s.items);
+  const selectedMonth = useConfigStore((s) => s.selectedMonth);
 
   const data = useMemo(() => {
-    const months = getLast6Months();
+    const months = getLast6Months(selectedMonth);
     return months.map((ym) => {
       const monthItems = items.filter((t) => t.createdAt.startsWith(ym));
       const ingresos = monthItems
@@ -74,7 +74,7 @@ export function IncomeExpenseBarChart() {
         .reduce((sum, t) => sum + t.amountCLP, 0);
       return { label: shortLabel(ym), ingresos, gastos };
     });
-  }, [items]);
+  }, [items, selectedMonth]);
 
   return (
     <Card className="ob-card-glass col-span-full md:col-span-4 min-w-0">
