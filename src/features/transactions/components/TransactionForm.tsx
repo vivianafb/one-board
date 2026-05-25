@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Plus, X } from "lucide-react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { Plus } from "lucide-react";
 import type { Transaction, ExpenseType } from "@/types/finance";
 import { PAYMENT_METHOD_SELECT_OPTIONS, EXPENSE_TYPE_SELECT_OPTIONS } from "@/lib/transaction-options";
 import { useCategoriesStore, type CategoryType } from "@/features/categories/store";
@@ -10,6 +10,7 @@ import type { CuotaParams } from "../utils/transactions-table";
 
 const INPUT_CLASS =
   "h-9 rounded-md border border-input bg-background px-3 text-sm";
+const SELECT_CLASS = `${INPUT_CLASS} pr-8`;
 
 type TransactionFormProps = {
   values: Partial<Transaction>;
@@ -75,6 +76,19 @@ export function TransactionForm({
   const [showAddCat, setShowAddCat] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [newCatType, setNewCatType] = useState<CategoryType>(currentExpenseType);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showAddCat) return;
+    const handler = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setShowAddCat(false);
+        setNewCatName("");
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showAddCat]);
 
   const handleExpenseTypeChange = (type: ExpenseType) => {
     const firstOfType = categories.find((c) => c.type === type);
@@ -176,7 +190,7 @@ export function TransactionForm({
         <select
           value={values.type}
           onChange={(e) => onChange({ type: e.target.value as Transaction["type"] })}
-          className={INPUT_CLASS}
+          className={SELECT_CLASS}
         >
           <option value="income">Ingreso</option>
           <option value="expense">Gasto</option>
@@ -186,11 +200,11 @@ export function TransactionForm({
       {isExpense && (
         <div className="flex gap-3 items-start">
           <div>
-            <label className="mb-1 block text-sm font-medium">Naturaleza</label>
+            <label className="mb-1 block text-sm font-medium">Tipo de gasto</label>
             <select
               value={currentExpenseType}
               onChange={(e) => handleExpenseTypeChange(e.target.value as ExpenseType)}
-              className={INPUT_CLASS}
+              className={SELECT_CLASS}
             >
               {EXPENSE_TYPE_SELECT_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>
@@ -200,47 +214,54 @@ export function TransactionForm({
             </select>
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">Categoría</label>
-            <select
-              value={values.expenseCategory ?? filteredCategories[0]?.id ?? "OTHERS"}
-              onChange={(e) => onChange({ expenseCategory: e.target.value })}
-              className={INPUT_CLASS}
-            >
-              {filteredCategories.map(({ id, name }) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-
-            {!showAddCat ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setNewCatType(currentExpenseType);
-                  setShowAddCat(true);
-                }}
-                className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          <div ref={popoverRef} className="relative">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="mb-1 block text-sm font-medium">Categoría</label>
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewCatType(currentExpenseType);
+                      setShowAddCat((v) => !v);
+                    }}
+                    className="h-6 w-6 rounded border border-input bg-background flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    aria-label="Nueva categoría"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+              <select
+                value={values.expenseCategory ?? filteredCategories[0]?.id ?? "OTHERS"}
+                onChange={(e) => onChange({ expenseCategory: e.target.value })}
+                className={SELECT_CLASS}
               >
-                <Plus className="h-3 w-3" />
-                Nueva categoría
-              </button>
-            ) : (
-              <div className="mt-2 flex items-center gap-2">
+                {filteredCategories.map(({ id, name }) => (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+
+
+            {showAddCat && (
+              <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-md border border-border bg-popover p-3 shadow-lg flex flex-col gap-2">
                 <input
                   type="text"
                   placeholder="Nombre"
                   value={newCatName}
                   onChange={(e) => setNewCatName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddCategory())}
-                  className={`${INPUT_CLASS} w-28`}
+                  className={`${INPUT_CLASS} w-full`}
                   autoFocus
                 />
                 <select
                   value={newCatType}
                   onChange={(e) => setNewCatType(e.target.value as CategoryType)}
-                  className={`${INPUT_CLASS} w-24`}
+                  className={`${SELECT_CLASS} w-full`}
                 >
                   <option value="fixed">Fijo</option>
                   <option value="variable">Variable</option>
@@ -248,17 +269,9 @@ export function TransactionForm({
                 <button
                   type="button"
                   onClick={handleAddCategory}
-                  className="h-9 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                  className="h-8 w-full rounded-md bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   Agregar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setShowAddCat(false); setNewCatName(""); }}
-                  className="h-9 w-9 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                  aria-label="Cancelar"
-                >
-                  <X className="h-4 w-4" />
                 </button>
               </div>
             )}
@@ -275,14 +288,10 @@ export function TransactionForm({
               tabIndex={0}
               onClick={() => setIsCuota((v) => !v)}
               onKeyDown={(e) => e.key === " " && setIsCuota((v) => !v)}
-              className={`relative h-5 w-9 rounded-full transition-colors ${
-                isCuota ? "bg-primary" : "bg-muted"
-              }`}
+              className={`relative h-5 w-9 rounded-full transition-colors ${isCuota ? "bg-primary" : "bg-muted"}`}
             >
               <span
-                className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                  isCuota ? "translate-x-4" : "translate-x-0.5"
-                }`}
+                className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${isCuota ? "translate-x-4" : "translate-x-0.5"}`}
               />
             </div>
             ¿Es en cuotas?
@@ -297,7 +306,7 @@ export function TransactionForm({
           onChange={(e) =>
             onChange({ paymentMethod: e.target.value as Transaction["paymentMethod"] })
           }
-          className={INPUT_CLASS}
+          className={SELECT_CLASS}
         >
           {PAYMENT_METHOD_SELECT_OPTIONS.map(({ value, label }) => (
             <option key={value} value={value}>
@@ -311,9 +320,10 @@ export function TransactionForm({
         <label className="mb-1 block text-sm font-medium">Fecha</label>
         <input
           type="date"
-          value={values.createdAt ?? ""}
+          value={values.createdAt ?? new Date().toISOString().split('T')[0]}
           onChange={(e) => onChange({ createdAt: e.target.value })}
           className={INPUT_CLASS}
+          style={{ colorScheme: "dark", cursor: "pointer" }}
         />
       </div>
 

@@ -86,7 +86,7 @@ function BreakdownTable({
           </div>
 
           {/* Scrollable body */}
-          <div className="overflow-y-auto max-h-[240px] min-h-0">
+          <div className="overflow-y-auto max-h-[240px] min-h-0 flex-1">
             {rows.map(({ category, amount, percent }) => {
               const isAlert = highlightAbove != null && percent > highlightAbove;
               const isExpanded = expandedCategory === category;
