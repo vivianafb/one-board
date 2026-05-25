@@ -20,7 +20,7 @@ const SideBar = () => {
   const sidebarOpen = isHydrated ? isOpen : false;
   
   const menuItems = [
-    { href: "/", label: "Dashboard", icon: Home },
+    { href: "/dashboard", label: "Dashboard", icon: Home },
     { href: "/transactions", label: "Transacciones", icon: ArrowLeftRight },
     { href: "/savings", label: "Ahorros", icon: PiggyBank },
     { href: "/investments", label: "Inversiones", icon: TrendingUp },
