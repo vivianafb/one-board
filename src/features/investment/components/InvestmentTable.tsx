@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 import type { Investment } from "../types";
 import { calculateInvestmentPerformance } from "../utils/performance";
 import { getGainClass } from "../utils/ui";
@@ -9,15 +10,21 @@ import { formatAmountCLP, formatAmountUSD } from "@/lib/format";
 const TYPE_LABELS: Record<Investment["type"], string> = {
   ETF: "ETF",
   CASH_INTEREST: "Interés",
+  CRYPTO: "Crypto",
+  STOCK: "Acción",
 };
 
 function fmt(currency: "CLP" | "USD", value: number) {
   return currency === "CLP" ? formatAmountCLP(value) : formatAmountUSD(value);
 }
 
-type Props = { investments: Investment[] };
+type Props = {
+  investments: Investment[];
+  onEdit: (investment: Investment) => void;
+  onDelete: (investment: Investment) => void;
+};
 
-export function InvestmentTable({ investments }: Props) {
+export function InvestmentTable({ investments, onEdit, onDelete }: Props) {
   const rows = useMemo(
     () =>
       investments
@@ -41,6 +48,7 @@ export function InvestmentTable({ investments }: Props) {
             <th className="px-4 py-3 text-right">Valor actual</th>
             <th className="px-4 py-3 text-right">Ganancia $</th>
             <th className="px-4 py-3 text-right">Ganancia %</th>
+            <th className="px-4 py-3 text-right w-20"></th>
           </tr>
         </thead>
         <tbody>
@@ -74,6 +82,26 @@ export function InvestmentTable({ investments }: Props) {
               <td className={`px-4 py-3 text-right tabular-nums font-medium ${getGainClass(perf.returnPercent)}`}>
                 {perf.returnPercent >= 0 ? "+" : ""}
                 {perf.returnPercent.toFixed(1)}%
+              </td>
+              <td className="px-4 py-3 text-right">
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onEdit(inv)}
+                    className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                    aria-label="Editar"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(inv)}
+                    className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-rose-400"
+                    aria-label="Eliminar"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
