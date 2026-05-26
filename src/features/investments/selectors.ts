@@ -12,18 +12,12 @@ export const selectFilteredItems = (selectedMonth: string) => (s: InvestmentStor
   });
 };
 
-export const selectPortfolioSummary = (s: InvestmentStore) => {
-  const toCLP = (inv: InvestmentStore["items"][number]) =>
-    inv.currency === "CLP" ? 1 : USD_TO_CLP;
+const toCLP = (inv: InvestmentStore["items"][number]) =>
+  inv.currency === "CLP" ? 1 : USD_TO_CLP;
 
-  const totalValue = s.items.reduce(
-    (sum, inv) => sum + inv.currentValue * toCLP(inv),
-    0
-  );
-  const totalInvested = s.items.reduce(
-    (sum, inv) => sum + inv.investedAmount * toCLP(inv),
-    0
-  );
+// Return primitives (not objects) to avoid useSyncExternalStore infinite loop
+export const selectPortfolioValue = (s: InvestmentStore) =>
+  s.items.reduce((sum, inv) => sum + inv.currentValue * toCLP(inv), 0);
 
-  return { totalValue, totalInvested };
-};
+export const selectPortfolioInvested = (s: InvestmentStore) =>
+  s.items.reduce((sum, inv) => sum + inv.investedAmount * toCLP(inv), 0);
