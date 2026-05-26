@@ -107,5 +107,6 @@ export function buildTransactionPatch(form: Partial<Transaction>): Partial<Trans
     createdAt: form.createdAt ?? new Date().toISOString().slice(0, 10),
     expenseType: type === "expense" ? (form.expenseType ?? "variable") : undefined,
     expenseCategory: type === "expense" ? (form.expenseCategory ?? "OTHERS") : undefined,
+    installment: form.installment,
   };
 }

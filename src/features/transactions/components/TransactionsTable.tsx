@@ -155,6 +155,7 @@ export function TransactionsTable() {
       expenseCategory: transaction.expenseCategory ?? "OTHERS",
       paymentMethod: transaction.paymentMethod,
       createdAt: transaction.createdAt,
+      installment: transaction.installment,
     });
   }, []);
 
@@ -218,6 +219,12 @@ export function TransactionsTable() {
               setEditingId(null);
               setEditTransaction({});
             }}
+            warning={
+              editTransaction.installment
+                ? `⚠️ Estás editando la cuota ${editTransaction.installment.current}/${editTransaction.installment.total} de "${editTransaction.installment.itemName}". Los demás meses no se verán afectados.`
+                : undefined
+            }
+            disableAmount={!!editTransaction.installment}
           />
         )}
 
