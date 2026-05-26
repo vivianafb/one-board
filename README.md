@@ -2,84 +2,130 @@
 
 OneBoard is a personal finance dashboard built to simulate a real-world application while focusing on **frontend architecture, state management, and TypeScript modeling**.
 
-It emphasizes predictable state, explicit domain modeling, and clear separation of concerns.
-
-The goal of this project is not to create a full finance product, but to demonstrate how a medium-sized dashboard app can be structured in a scalable and maintainable way.
-
+It demonstrates clean architecture principles: dependency inversion, domain isolation, and feature-based organization. The goal is not to ship a full finance product, but to show how a mid-sized dashboard can be structured for maintainability and testability.
 
 ---
 
 ## 🧠 What this project demonstrates
 
-This repository showcases:
-
-- Structuring a Next.js application for scalability  
-- Modeling domain data using TypeScript  
-- Managing complex UI state with a centralized store  
-- Separating business logic from UI components  
-- Building dashboard-style interfaces with derived metrics  
+- Feature-based (Scream) architecture — folder structure communicates intent  
+- Clean Architecture — domain, application, and presentation layers with clear boundaries  
+- Dependency Inversion Principle — repository interfaces decouple components from data fetching  
+- Domain types co-located per feature with zero framework imports  
+- Service layer for data loading orchestration, separate from state management  
+- Pure state containers (Zustand) with no I/O side effects  
+- Selector pattern for derived state — fully unit-testable without React  
+- Mock Service Worker (MSW) for realistic API simulation during development  
 
 ---
 
 ## 🧱 Tech Stack
 
-- Next.js (App Router) + TypeScript  
-- Tailwind CSS  
-- Zustand for global state  
-- React Hook Form  
-- Recharts  
-- Local mock data (simulating API responses)
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router) + TypeScript |
+| Styling | Tailwind CSS + shadcn/ui |
+| State | Zustand (feature-level stores, persisted) |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts |
+| API mocking | Mock Service Worker (MSW) |
+| Testing | Jest + Testing Library |
 
-This project follows a feature-based architecture with centralized domain typing to ensure scalability and maintainability.
+---
+
+## 🏗️ Architecture
+
+The project follows a layered architecture within each feature:
+
+```
+Repository Interface  ← contract (domain layer)
+       ↓
+HTTP Repository       ← implementation (infrastructure)
+       ↓
+Service               ← orchestration (application layer)
+       ↓
+Zustand Store         ← pure state container
+       ↓
+Selectors             ← derived state, zero side effects
+       ↓
+Components            ← render only, no business logic
+```
+
+Swapping MSW for a real API requires changes only to the HTTP repository and mock handlers — nothing in the component or service layer changes.
 
 ---
 
 ## Project Structure
 
+```
 src/
-├─ app/              → Next.js App Router pages
-├─ components/       → Shared, layout and reusable UI components
-│  └─ ui/            → Generic UI components
-├─ features/         → Feature-based modules (dashboard, transactions, etc.)
-├─ stores/           → Global state management (Zustand)
-├─ types/            → Domain models and TypeScript types
-├─ lib/              → Helpers, utilities and business logic
-├─ mocks/            → Local mock data (simulating API responses)
+├── app/                → Next.js App Router pages and API routes
+├── components/
+│   ├── layout/         → Shell components (SideBar, Navbar, Footer, UI store)
+│   ├── shared/         → Cross-feature components (MonthSelector, MSWProvider)
+│   └── ui/             → shadcn/ui primitives
+├── features/
+│   ├── investments/    → repository, http-repository, service, store,
+│   ├── transactions/     types, selectors, components, hooks, utils
+│   ├── savings/
+│   ├── dashboard/
+│   ├── categories/
+│   └── config/
+├── lib/
+│   ├── types.ts        → Shared primitives (Currency, YearMonth)
+│   ├── http.ts         → Generic HTTP utility
+│   ├── format.ts       → Currency/number formatting
+│   └── utils.ts        → Date helpers
+├── types/
+│   └── finance.ts      → Backward-compatibility re-export barrel
+└── mocks/              → MSW handlers and seed data
+```
 
+Each feature folder is self-contained: it owns its types, state, data access contract, and UI. No cross-feature imports except through shared primitives.
 
 ---
 
-## ✨ MVP Features
+## ✨ Features
 
 ### Dashboard
-- Monthly financial summary  
-- Income vs expenses overview  
-- Savings and balance metrics  
-- Chart visualization  
+- Monthly income, expenses, and balance summary
+- Portfolio value vs. invested comparison
+- Category breakdown pie chart
+- Income vs. expenses bar chart
 
 ### Transactions
-- Typed transaction table  
-- Add/edit transaction form  
-- Monthly filtering  
+- Add, edit, and delete transactions
+- Fixed vs. variable expense classification
+- Installment (cuota) tracking across months
+- Monthly filtering
 
 ### Savings
-- Monthly savings tracking  
-- Cumulative balance calculation  
+- Goal-based savings tracking
+- Deposit recording with monthly history
+- Progress toward each goal
 
 ### Investments
-- Basic manual investment tracking  
+- Add, edit, and delete investments (ETF, crypto, stocks, cash)
+- CLP / USD multi-currency support with conversion
+- Monthly period performance tracking
+- Portfolio summary with gain/loss percentage
 
 ---
 
-## 🚀 Purpose of the project
+## 🚀 Getting Started
 
-This project focuses on **code organization and architecture**, not feature quantity.  
-It is designed to reflect how frontend code is structured in real production applications.
+```bash
+npm install
+npm run dev
+```
+
+MSW intercepts all `/api/*` requests in development and returns mock data. No backend required.
 
 ---
 
-## 📌 Future improvements (optional)
+## 📌 Possible extensions
 
-- Backend integration  
+- Add write endpoints to the repository layer (POST/PUT/DELETE) for full API persistence
+- Activate React Query (already installed) for cache, background refetch, and deduplication
 - Authentication and user accounts
-- Persistent storage and caching
+- URL-based month selection for deep-linkable views
