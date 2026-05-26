@@ -1,24 +1,21 @@
 "use client"
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import AddGoalForm from "./AddGoalForm"
 
+type AddGoalDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
 
-const AddGoalDialog = () => {
-  const [open, setOpen] = useState(false)
-
+const AddGoalDialog = ({ open, onOpenChange }: AddGoalDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="ob-btn-primary">Nueva Meta</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="ob-card-glass">
         <DialogHeader>
           <DialogTitle>Crear Meta de Ahorro</DialogTitle>
         </DialogHeader>
-        <AddGoalForm onSuccess={() => setOpen(false)} />
+        <AddGoalForm onSuccess={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   )
