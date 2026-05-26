@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="es" className="dark">
       <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
         <MSWProvider>
           <div className="flex min-h-screen w-full">

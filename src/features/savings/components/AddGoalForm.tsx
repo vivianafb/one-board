@@ -92,6 +92,7 @@ const AddGoalForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   <SelectItem value="EMERGENCY_FUND">Fondo de Emergencia</SelectItem>
                   <SelectItem value="TRAVEL">Viajes</SelectItem>
                   <SelectItem value="HOME">Hogar</SelectItem>
+                  <SelectItem value="RETIREMENT">Jubilación</SelectItem>
                   <SelectItem value="OTHER">Otro</SelectItem>
                 </SelectContent>
               </Select>
