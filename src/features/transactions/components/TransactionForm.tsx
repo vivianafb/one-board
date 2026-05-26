@@ -103,8 +103,8 @@ export function TransactionForm({
   const handleAddCategory = () => {
     const name = newCatName.trim();
     if (!name) return;
-    addCategory(name, newCatType);
-    onChange({ expenseCategory: name });
+    const newId = addCategory(name, newCatType);
+    onChange({ expenseCategory: newId });
     setNewCatName("");
     setShowAddCat(false);
   };
