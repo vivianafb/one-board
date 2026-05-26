@@ -1,5 +1,11 @@
 # OneBoard – Personal Finance Dashboard
 
+**[Live Demo →](https://one-board.vercel.app/dashboard)**
+
+![Coverage](https://img.shields.io/badge/coverage-79%25-brightgreen)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+
 OneBoard is a personal finance dashboard built to simulate a real-world application while focusing on **frontend architecture, state management, and TypeScript modeling**.
 
 It emphasizes predictable state, explicit domain modeling, and clear separation of concerns.
