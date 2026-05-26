@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUIStore } from "@/stores/ui.store";
+import { useUIStore } from "@/components/layout/store";
 import React from "react";
 import { Home, ArrowLeftRight, PiggyBank, TrendingUp, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";

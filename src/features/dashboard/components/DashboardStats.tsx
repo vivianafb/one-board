@@ -2,15 +2,14 @@
 
 import { useMemo } from "react";
 import { useTransactionsStore } from "@/features/transactions/store";
-import { useInvestmentStore } from "@/features/investment/store";
+import { useInvestmentStore } from "@/features/investments/store";
 import { useConfigStore } from "@/features/config/store";
 import { selectTransactionStats } from "@/features/transactions/selectors";
+import { selectPortfolioSummary } from "@/features/investments/selectors";
 import type { TransactionsStore } from "@/features/transactions/store";
 import { buildDashboardStats } from "@/features/dashboard/utils/dashboard-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatAmountCLP } from "@/lib/format";
-
-const USD_TO_CLP = 1000;
 
 export function DashboardStats() {
   const selectedMonth = useConfigStore((s) => s.selectedMonth);
@@ -21,27 +20,8 @@ export function DashboardStats() {
     [txItems, selectedMonth]
   );
 
-  const investments = useInvestmentStore((s) => s.items);
-
-  const portfolioValue = useMemo(
-    () =>
-      investments.reduce(
-        (sum, inv) =>
-          sum + (inv.currency === "CLP" ? inv.currentValue : inv.currentValue * USD_TO_CLP),
-        0
-      ),
-    [investments]
-  );
-
-  const portfolioInvested = useMemo(
-    () =>
-      investments.reduce(
-        (sum, inv) =>
-          sum + (inv.currency === "CLP" ? inv.investedAmount : inv.investedAmount * USD_TO_CLP),
-        0
-      ),
-    [investments]
-  );
+  const { totalValue: portfolioValue, totalInvested: portfolioInvested } =
+    useInvestmentStore(selectPortfolioSummary);
 
   const stats = useMemo(
     () =>

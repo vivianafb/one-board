@@ -1,4 +1,4 @@
-import { calculateInvestmentPerformance } from "@/features/investment/utils/performance";
+import { calculateInvestmentPerformance } from "@/features/investments/utils/performance";
 import type { Investment, InvestmentPeriod } from "@/types/finance";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 "use client";
 
-import { InvestmentsView } from "@/features/investment/components/InvestmentsView";
+import { InvestmentsView } from "@/features/investments/components/InvestmentsView";
 
 export default function InvestmentsPage() {
   return (

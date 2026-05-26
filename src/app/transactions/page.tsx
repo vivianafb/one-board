@@ -1,7 +1,7 @@
 "use client";
 
 import { TransactionsTable } from '@/features/transactions/components/TransactionsTable';
-import { MonthSelector } from '@/features/components/MonthSelector';
+import { MonthSelector } from '@/components/shared/MonthSelector';
 
 export default function TransactionsPage() {
   return (

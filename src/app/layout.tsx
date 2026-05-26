@@ -1,10 +1,10 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Metadata } from "next";
-import SideBar from "@/components/Home/SideBar";
-import Navbar from "@/components/Home/Navbar";
-import Footer from "@/components/Home/Footer";
-import MSWProvider from "@/components/MSWProvider";
+import SideBar from "@/components/layout/SideBar"; 
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import MSWProvider from "@/components/shared/MSWProvider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],

@@ -6,13 +6,16 @@ import { Transaction } from "@/types/finance";
 
 const buildState = (items: Transaction[]): TransactionsStore => ({
   items,
-  isLoading: false,
+  status: "idle",
+  error: null,
   actions: {
+    setItems: jest.fn(),
+    setStatus: jest.fn(),
+    setError: jest.fn(),
     add: jest.fn(),
     addMany: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-    initialize: jest.fn(),
   },
 });
 

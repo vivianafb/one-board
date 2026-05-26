@@ -1,10 +1,10 @@
 "use client";
 
-import { MonthSelector } from "@/features/components/MonthSelector";
+import { MonthSelector } from "@/components/shared/MonthSelector";
 import { DashboardStats } from "@/features/dashboard/components/DashboardStats";
 import { CategoryPieChart } from "@/features/dashboard/components/CategoryPieChart";
 import { IncomeExpenseBarChart } from "@/features/dashboard/components/IncomeExpenseBarChart";
-import { DemoBanner } from "@/components/DemoBanner";
+import { DemoBanner } from "@/components/shared/DemoBanner";
 
 export default function DashboardPage() {
   return (
