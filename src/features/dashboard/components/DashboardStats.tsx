@@ -5,7 +5,7 @@ import { useTransactionsStore } from "@/features/transactions/store";
 import { useInvestmentStore } from "@/features/investments/store";
 import { useConfigStore } from "@/features/config/store";
 import { selectTransactionStats } from "@/features/transactions/selectors";
-import { selectPortfolioSummary } from "@/features/investments/selectors";
+import { selectPortfolioValue, selectPortfolioInvested } from "@/features/investments/selectors";
 import type { TransactionsStore } from "@/features/transactions/store";
 import { buildDashboardStats } from "@/features/dashboard/utils/dashboard-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,8 +20,8 @@ export function DashboardStats() {
     [txItems, selectedMonth]
   );
 
-  const { totalValue: portfolioValue, totalInvested: portfolioInvested } =
-    useInvestmentStore(selectPortfolioSummary);
+  const portfolioValue = useInvestmentStore(selectPortfolioValue);
+  const portfolioInvested = useInvestmentStore(selectPortfolioInvested);
 
   const stats = useMemo(
     () =>
