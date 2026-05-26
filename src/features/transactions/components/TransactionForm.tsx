@@ -6,6 +6,7 @@ import type { Transaction, ExpenseType } from "@/types/finance";
 import { PAYMENT_METHOD_SELECT_OPTIONS, EXPENSE_TYPE_SELECT_OPTIONS } from "@/lib/transaction-options";
 import { useCategoriesStore, type CategoryType } from "@/features/categories/store";
 import { formatAmountCLP } from "@/lib/format";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { CuotaParams } from "../utils/transactions-table";
 
 const INPUT_CLASS =
@@ -21,6 +22,8 @@ type TransactionFormProps = {
   title?: string;
   onCancel?: () => void;
   cancelLabel?: string;
+  warning?: string;
+  disableAmount?: boolean;
 };
 
 export function TransactionForm({
@@ -32,6 +35,8 @@ export function TransactionForm({
   title,
   onCancel,
   cancelLabel = "Cancelar",
+  warning,
+  disableAmount = false,
 }: TransactionFormProps) {
   const isExpense = values.type === "expense";
   const currentExpenseType = values.expenseType ?? "variable";
@@ -103,8 +108,8 @@ export function TransactionForm({
   const handleAddCategory = () => {
     const name = newCatName.trim();
     if (!name) return;
-    addCategory(name, newCatType);
-    onChange({ expenseCategory: name });
+    const newId = addCategory(name, newCatType);
+    onChange({ expenseCategory: newId });
     setNewCatName("");
     setShowAddCat(false);
   };
@@ -112,6 +117,12 @@ export function TransactionForm({
   return (
     <form onSubmit={handleFormSubmit} className="ob-card-glass flex flex-wrap items-end gap-3 p-4">
       {title && <p className="w-full text-sm font-medium text-muted-foreground">{title}</p>}
+
+      {warning && (
+        <div className="w-full rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-300">
+          {warning}
+        </div>
+      )}
 
       {!isCuota && (
         <div>
@@ -129,14 +140,27 @@ export function TransactionForm({
       {!isCuota && (
         <div>
           <label className="mb-1 block text-sm font-medium">Monto (CLP)</label>
-          <input
-            type="number"
-            min={1}
-            value={values.amountCLP ?? ""}
-            onChange={(e) => onChange({ amountCLP: Number(e.target.value) || 0 })}
-            className={INPUT_CLASS}
-            required
-          />
+          {disableAmount ? (
+            <Tooltip content="El monto es fijo en transacciones a cuotas" side="top">
+              <div className="cursor-not-allowed">
+                <input
+                  type="number"
+                  value={values.amountCLP ?? ""}
+                  disabled
+                  className={`${INPUT_CLASS} pointer-events-none opacity-50`}
+                />
+              </div>
+            </Tooltip>
+          ) : (
+            <input
+              type="number"
+              min={1}
+              value={values.amountCLP ?? ""}
+              onChange={(e) => onChange({ amountCLP: Number(e.target.value) || 0 })}
+              className={INPUT_CLASS}
+              required
+            />
+          )}
         </div>
       )}
 

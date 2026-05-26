@@ -31,7 +31,7 @@ export const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 type CategoriesActions = {
-  add: (name: string, type: CategoryType) => void;
+  add: (name: string, type: CategoryType) => string;
 };
 
 export type CategoriesStore = {
@@ -44,10 +44,13 @@ export const useCategoriesStore = create<CategoriesStore>()(
     (set) => ({
       categories: DEFAULT_CATEGORIES,
       actions: {
-        add: (name, type) =>
+        add: (name, type) => {
+          const id = crypto.randomUUID();
           set((state) => ({
-            categories: [...state.categories, { id: name, name, type }],
-          })),
+            categories: [...state.categories, { id, name, type }],
+          }));
+          return id;
+        },
       },
     }),
     {

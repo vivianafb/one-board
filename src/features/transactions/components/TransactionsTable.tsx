@@ -38,20 +38,20 @@ function StatsCards({
   balance,
   fixedExpenses,
   variableExpenses,
+  creditCardDebt,
 }: {
   balance: number;
   fixedExpenses: number;
   variableExpenses: number;
+  creditCardDebt: number;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div className="ob-card-glass px-4 py-3">
         <p className="text-sm font-medium text-muted-foreground">
           Balance (ingresos − gastos)
         </p>
-        <p
-          className={`text-xl ${balance >= 0 ? "ob-amount-income" : "ob-amount-expense"}`}
-        >
+        <p className={`text-xl ${balance >= 0 ? "ob-amount-income" : "ob-amount-expense"}`}>
           {formatAmountCLP(balance)}
         </p>
       </div>
@@ -62,12 +62,17 @@ function StatsCards({
         </p>
       </div>
       <div className="ob-card-glass px-4 py-3">
-        <p className="text-sm font-medium text-muted-foreground">
-          Gastos variables
-        </p>
+        <p className="text-sm font-medium text-muted-foreground">Gastos variables</p>
         <p className="text-xl font-semibold tabular-nums">
           {formatAmountCLP(variableExpenses)}
         </p>
+      </div>
+      <div className="ob-card-glass px-4 py-3">
+        <p className="text-sm font-medium text-muted-foreground">Tarjeta de Crédito</p>
+        <p className="text-xl font-semibold tabular-nums ob-amount-neutral">
+          {formatAmountCLP(creditCardDebt)}
+        </p>
+        <p className="text-xs text-muted-foreground mt-0.5">Consumo del mes en crédito</p>
       </div>
     </div>
   );
@@ -79,7 +84,7 @@ export function TransactionsTable() {
   const { add, addMany, update, delete: deleteTransaction } = useTransactionsStore(
     (s) => s.actions
   );
-  const { balance, fixedExpenses, variableExpenses } = useMemo(
+  const { balance, fixedExpenses, variableExpenses, creditCardDebt } = useMemo(
     () => selectTransactionStats({ items } as TransactionsStore, selectedMonth),
     [items, selectedMonth]
   );
@@ -150,6 +155,7 @@ export function TransactionsTable() {
       expenseCategory: transaction.expenseCategory ?? "OTHERS",
       paymentMethod: transaction.paymentMethod,
       createdAt: transaction.createdAt,
+      installment: transaction.installment,
     });
   }, []);
 
@@ -190,6 +196,7 @@ export function TransactionsTable() {
         balance={balance}
         fixedExpenses={fixedExpenses}
         variableExpenses={variableExpenses}
+        creditCardDebt={creditCardDebt}
       />
 
       <InstallmentDebts />
@@ -212,6 +219,12 @@ export function TransactionsTable() {
               setEditingId(null);
               setEditTransaction({});
             }}
+            warning={
+              editTransaction.installment
+                ? `⚠️ Estás editando la cuota ${editTransaction.installment.current}/${editTransaction.installment.total} de "${editTransaction.installment.itemName}". Los demás meses no se verán afectados.`
+                : undefined
+            }
+            disableAmount={!!editTransaction.installment}
           />
         )}
 
