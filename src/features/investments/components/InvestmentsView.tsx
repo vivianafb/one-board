@@ -11,7 +11,7 @@ import { MonthlyDetail } from "./MonthlyDetail";
 import { EmptyInvestmentsState } from "./EmptyInvestmentsState";
 import { InvestmentFormDialog } from "./InvestmentFormDialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { MonthSelector } from "@/features/components/MonthSelector";
+import { MonthSelector } from "@/components/shared/MonthSelector";
 
 export function InvestmentsView() {
   const selectedMonth = useConfigStore((s) => s.selectedMonth);

@@ -1,78 +1,18 @@
-import type { ExpenseType, PaymentMethod, ExpenseCategory } from "@/lib/transaction-options";
-
-// --- Utilidades Globales ---
-export type Currency = "CLP" | "USD";
-export type YearMonth = `${number}-${number}`; // Tipado fuerte para fechas YYYY-MM
-
-// --- Inversiones ---
-export type InvestmentType = "ETF" | "CASH_INTEREST" | "CRYPTO" | "STOCK";
-
-export interface InvestmentPeriod {
-  periodId: string; 
-  label: string; 
-  startValue: number;
-  endValue: number;
-}
-
-export interface Investment {
-  id: string;
-  name: string;
-  type: InvestmentType;
-  provider: string;
-  currency: Currency;
-  investedAmount: number;
-  currentValue: number;
-  createdAt: string;
-  periods?: InvestmentPeriod[];
-}
-
-// --- Transacciones ---
-export type TransactionType = "income" | "expense";
-export type { ExpenseType, PaymentMethod, ExpenseCategory } from "@/lib/transaction-options";
-export interface TransactionInstallment {
-  groupId: string;
-  itemName: string;
-  current: number;
-  total: number;
-}
-
-export interface Transaction {
-  id: string;
-  amountCLP: number;
-  description: string;
-  type: TransactionType;
-  createdAt: string;
-  paymentMethod: PaymentMethod;
-  expenseType?: ExpenseType;
-  expenseCategory?: ExpenseCategory;
-  installment?: TransactionInstallment;
-}
-
-export type SavingGoalCategory = 'EMERGENCY_FUND' | 'TRAVEL' | 'HOME' | 'RETIREMENT' | 'OTHER' ;
-
-export interface SavingGoal {
-  id: string;
-  name: string;
-  targetAmount: number;
-  currentAmount: number;
-  currency: 'CLP' | 'USD';
-  category: SavingGoalCategory;
-  deadline?: string; // ISO Date
-  createdAt: string;
-}
-
-export interface MonthlySaving {
-  id: string;
-  monthId: string; // Formato "YYYY-MM" para vincular con filtros
-  amount: number;
-  currency: 'CLP' | 'USD';
-  createdAt: string;
-  // Opcional: Vincularlo a una meta específica
-  goalId?: string; 
-}
-
-export interface SavingsState {
-  goals: SavingGoal[];
-  monthlyHistory: MonthlySaving[];
-  // El "Total Ahorrado" suele ser un selector derivado, no un estado
-}
+// Backward-compatibility barrel — feature code should import from feature types directly.
+// Cross-cutting primitives live in @/lib/types.
+export type { Currency, YearMonth } from "@/lib/types";
+export type { Investment, InvestmentType, InvestmentPeriod } from "@/features/investments/types";
+export type {
+  Transaction,
+  TransactionType,
+  TransactionInstallment,
+  ExpenseType,
+  PaymentMethod,
+  ExpenseCategory,
+} from "@/features/transactions/types";
+export type {
+  SavingGoal,
+  MonthlySaving,
+  SavingsState,
+  SavingGoalCategory,
+} from "@/features/savings/types";

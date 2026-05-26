@@ -1,38 +1,35 @@
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
-import { Investment } from "@/types/finance";
-import { fetchInvestments } from "@/services/api";
+import type { Investment } from "./types";
+
+export type InvestmentStatus = "idle" | "loading" | "error";
 
 export type InvestmentActions = {
+  setItems: (items: Investment[]) => void;
+  setStatus: (status: InvestmentStatus) => void;
+  setError: (error: string | null) => void;
   add: (investment: Investment) => void;
   update: (id: string, patch: Partial<Investment>) => void;
   delete: (id: string) => void;
-  initialize: () => Promise<void>;
 };
 
 export type InvestmentStore = {
   items: Investment[];
-  isLoading: boolean;
+  status: InvestmentStatus;
+  error: string | null;
   actions: InvestmentActions;
 };
 
 export const INVESTMENT_STORE_STORAGE_KEY = "investment-store";
 
-export const createInvestmentInitialData = () => ({ items: [] as Investment[], isLoading: false });
-
 const investmentStoreCreator: StateCreator<InvestmentStore> = (set) => ({
   items: [],
-  isLoading: false,
+  status: "idle",
+  error: null,
   actions: {
-    initialize: async () => {
-      set({ isLoading: true });
-      try {
-        const items = await fetchInvestments();
-        set((state) => ({ items: state.items.length === 0 ? items : state.items }));
-      } finally {
-        set({ isLoading: false });
-      }
-    },
+    setItems: (items) => set({ items }),
+    setStatus: (status) => set({ status }),
+    setError: (error) => set({ error }),
     add: (investment) => set((state) => ({ items: [...state.items, investment] })),
     update: (id, patch) =>
       set((state) => ({

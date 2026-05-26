@@ -1,38 +1,36 @@
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
-import { SavingGoal, MonthlySaving, SavingsState } from "@/types/finance";
-import { fetchSavings } from "@/services/api";
+import type { SavingGoal, MonthlySaving, SavingsState } from "./types";
+
+export type SavingsStatus = "idle" | "loading" | "error";
 
 type SavingsActions = {
+  setGoals: (goals: SavingGoal[]) => void;
+  setStatus: (status: SavingsStatus) => void;
+  setError: (error: string | null) => void;
   addGoal: (goal: SavingGoal) => void;
   updateGoal: (id: string, patch: Partial<SavingGoal>) => void;
   deleteGoal: (id: string) => void;
   addMonthlySaving: (saving: MonthlySaving) => void;
   addDeposit: (goalId: string, amount: number, monthId: string) => void;
-  initialize: () => Promise<void>;
 };
 
 export type SavingsStore = SavingsState & {
-  isLoading: boolean;
+  status: SavingsStatus;
+  error: string | null;
   actions: SavingsActions;
 };
 
 const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
   goals: [],
   monthlyHistory: [],
-  isLoading: false,
+  status: "idle",
+  error: null,
   actions: {
-    initialize: async () => {
-      set({ isLoading: true });
-      try {
-        const goals = await fetchSavings();
-        set((state) => ({ goals: state.goals.length === 0 ? goals : state.goals }));
-      } finally {
-        set({ isLoading: false });
-      }
-    },
-    addGoal: (goal) =>
-      set((state) => ({ goals: [...state.goals, goal] })),
+    setGoals: (goals) => set({ goals }),
+    setStatus: (status) => set({ status }),
+    setError: (error) => set({ error }),
+    addGoal: (goal) => set((state) => ({ goals: [...state.goals, goal] })),
     updateGoal: (id, patch) =>
       set((state) => ({
         goals: state.goals.map((g) => (g.id === id ? { ...g, ...patch } : g)),
@@ -53,7 +51,7 @@ const savingsStoreCreator: StateCreator<SavingsStore> = (set) => ({
             goalId,
             amount,
             monthId,
-            currency: state.goals.find((g) => g.id === goalId)?.currency || "CLP",
+            currency: state.goals.find((g) => g.id === goalId)?.currency ?? "CLP",
             createdAt: new Date().toISOString(),
           },
         ],

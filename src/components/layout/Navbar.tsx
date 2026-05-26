@@ -5,7 +5,7 @@ import React from "react";
 import { User, Settings, Bell, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { cn } from "@/lib/utils";
-import { useUIStore } from "@/stores/ui.store";
+import { useUIStore } from "@/components/layout/store";
 
 const Navbar = () => {
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
